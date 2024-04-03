@@ -11,6 +11,7 @@
 
 <script setup>
 import OpenAI from 'openai'
+import { v4 as uuidv4 } from 'uuid'
 
 const system_prompt = ref('')
 
@@ -23,7 +24,8 @@ const config = ref({
 const messages = ref([{
     role: "user",
     content: "",
-    is_focus: true
+    is_focus: true,
+    id: uuidv4()
 }])
 const submit = ref({
     is_submit: false,
@@ -59,7 +61,9 @@ async function submitChat() {
                 content = chunck.choices[0]?.delta?.content || ''
                 messages.value.push({
                     role: role,
-                    content: content
+                    content: content,
+                    is_focus: false,
+                    id: uuidv4()
                 })
             }
             else {

@@ -11,7 +11,7 @@
             <textarea
                 ref="textarea"
                 @input="inputHandler"
-                v-model.trim="message.content"
+                v-model="message.content"
                 type="text"
                 :placeholder="message.role === 'user' ? 'Type user message here.' : 'Type assistant message here.'"
                 class="font-light w-full p-3 inline-block h-12 overflow-y-hidden resize-none rounded-lg border-[1px] focus:border-blue-500 border-transparent focus:outline-none focus:border-solid group-hover:bg-gray-100 focus:!bg-white"
@@ -41,10 +41,12 @@ function autoExpand() {
 function inputHandler(e) {
     emits("autoExpand")
     autoExpand()
+    console.log(e.target.value)
     props.message.content = e.target.value
 }
 
-watch(() => props.message.content, () => {
+watch(() => props.message.content, async () => {
+    await nextTick()
     emits('autoExpand')
     autoExpand()
 })

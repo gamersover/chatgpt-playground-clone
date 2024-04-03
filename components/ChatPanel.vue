@@ -6,7 +6,7 @@
             @change-role="changeRole(message)"
             @remove-role="removeMessage(index)"
             :message="message"
-            :key="index"
+            :key="message.id"
         />
         <button @click="addMessage" class="flex pl-4 py-4 w-full hover:bg-gray-100">
             <div class="flex text-sm gap-4 items-center">
@@ -26,6 +26,8 @@
 
 
 <script setup>
+import { v4 as uuidv4 } from 'uuid'
+
 const props = defineProps(['messages', 'submit'])
 const emits = defineEmits(['submitChat'])
 
@@ -45,7 +47,8 @@ function addMessage() {
     props.messages.push({
         role: new_role.value,
         content: '',
-        is_focus: true
+        is_focus: true,
+        id: uuidv4()
     })
 }
 
