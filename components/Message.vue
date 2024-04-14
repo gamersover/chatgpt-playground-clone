@@ -1,9 +1,9 @@
 <template>
     <div class="group flex w-full h-auto pl-2 border-b-[1px] justify-between hover:bg-gray-100">
-        <div class="flex w-[10%] h-12 mt-3">
+        <div class="flex items-center justify-center w-[10%] h-12 mt-3">
             <button
                 @click="$emit('changeRole', message)"
-                class="font-medium text-sm group-hover:bg-gray-300 px-2 py-1 rounded">
+                class="font-medium text-sm group-hover:bg-gray-300 px-2 py-2 rounded">
                 {{ message.role.toUpperCase() }}
             </button>
         </div>
@@ -19,13 +19,15 @@
         </div>
         <div class="flex flex-1 h-12 mt-3 items-center justify-center">
             <button @click="$emit('removeRole')" class="text-white group-hover:text-gray-400 hover:!text-black">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24" class="chat-message-remove-button"><path d="M9 11a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"></path><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" clip-rule="evenodd"></path></svg>
+                <CircleMinusIcon />
             </button>
         </div>
     </div>
 </template>
 
 <script setup>
+import CircleMinusIcon from './icon/CircleMinusIcon.vue'
+
 const props = defineProps(['message'])
 const textarea = ref(null)
 const emits = defineEmits(['changeRole', 'removeRole', 'autoExpand'])
@@ -41,7 +43,6 @@ function autoExpand() {
 function inputHandler(e) {
     emits("autoExpand")
     autoExpand()
-    console.log(e.target.value)
     props.message.content = e.target.value
 }
 

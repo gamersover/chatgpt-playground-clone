@@ -2,10 +2,14 @@
     <div class="flex flex-col w-64 gap-4 text-sm font-light h-full p-2 mr-2">
         <div>
             <p>Model</p>
-            <select :value="config.model" @input="changeModel" class="border-[1px] w-full rounded-md mt-2 p-2 focus:border-e-blue-300">
+            <select @input="changeModel" class="border-[1px] w-full rounded-md mt-2 p-2 focus:border-e-blue-300">
                 <option disabled>CHAT</option>
-                <option :selected="config.model==='openchat'" value="openchat">openchat</option>
-                <option :selected="config.model==='solar'" value="solar">solar</option>
+                <option v-for="(model, index) in models"
+                        :key="index"
+                        :selected="selectedModel===index"
+                        :value="index">
+                        {{ model.showName }}
+                </option>
             </select>
         </div>
         <div>
@@ -64,12 +68,19 @@
 
 
 <script setup>
-const props = defineProps(['config'])
+const props = defineProps(['config', 'models'])
 const stop_word = ref('')
-defineEmits(['changeTemperature', 'changeModel'])
+const selectedModel = ref(0)
+
+function setModelConfig(index) {
+    props.config.model = props.models[index].modelName
+    props.config.url = props.models[index].baseURL
+    props.config.sk = props.models[index].apiKey
+}
 
 function changeModel(e) {
-    props.config.model = e.target.value
+    selectedModel.value = e.target.value
+    setModelConfig(selectedModel.value)
 }
 
 function changeTemperature(e) {

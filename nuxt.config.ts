@@ -1,16 +1,20 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import dotenv from 'dotenv'
+
+dotenv.config()
+
 export default defineNuxtConfig({
+  devServer: {
+    port: process.env.PORT ? parseInt(process.env.PORT) : 3000
+  },
   devtools: { enabled: true },
   modules: ["@nuxtjs/tailwindcss"],
-  vite: {
-    server: {
-      proxy: {
-        "/ollama": {
-          target: "http://localhost:11434/v1",
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/ollama/, '')
-        }
-      }
+  runtimeConfig: {
+    public: {
+      PORT: process.env.PORT
     }
-  }
+  },
+  plugins: [
+    '~/plugins/clickoutside.js'
+  ]
 })
