@@ -9,7 +9,7 @@
     <div class="flex flex-1">
         <ul class="flex flex-col w-[230px] px-4 pt-4">
             <li>
-                <button @click="handleAddButton" class="hover:bg-gray-100 w-full p-2 rounded-md text-start">新建</button>
+                <button @click="handleNewModel" :class="{'bg-gray-100': isAddPanel}" class="hover:bg-gray-100 w-full p-2 rounded-md text-start">新建</button>
             </li>
             <li v-for="(model, index) in models" :key="index">
                 <ModelListItem :isSelected="currentModel===index" @HandleModelSelected="handleModelSelected(index)" @RemoveModel="removeModel" :model="model"/>
@@ -29,8 +29,12 @@
                 <input v-model="modelConfig.sk" type="password" class="border-[1px] w-full h-[50px] rounded-lg p-2"/>
             </div>
             <div class="flex gap-2 self-end">
-                <button @click="testModel" :class="{'disable bg-gray-200': !isTestEnable, 'bg-green-500 hover:bg-green-600': isTestEnable}" class="text-white border-[1px] py-2 px-2 rounded-lg">测试</button>
-                <button @click="addModel" :class="{'disable bg-gray-200': !addButtonEnable}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-2 rounded-lg">添加</button>
+                <button @click="testModel" :disabled="!testButtonEnable" :class="{'bg-gray-200': !testButtonEnable, 'bg-green-500 hover:bg-green-600': testButtonEnable}" class="text-white border-[1px] py-2 px-2 rounded-lg">
+                    测试
+                </button>
+                <button @click="addOrUpdateModel" :disabled="!canAddOrUpdate" :class="{'bg-gray-200': !canAddOrUpdate, 'bg-blue-500 hover:bg-blue-600': canAddOrUpdate}" class="text-white py-2 px-2 rounded-lg">
+                    {{ updateButtonEnable ? '更新' : ' 添加' }}
+                </button>
             </div>
         </div>
     </div>
@@ -45,22 +49,33 @@ import CloseIcon from './icon/CloseIcon.vue'
 const emits = defineEmits(["closeModal"])
 const props = defineProps(['models'])
 
-const isAddPanel = ref(true)
-const isTesting = ref(false)
-const addButtonEnable = ref(false)
-const isTestEnable = computed(() => {
-    return modelConfig.value.model!==null && modelConfig.value.url!==null && !(isTesting.value)
-})
-
-const currentModel = ref(null)
-
 const modelConfig = ref({
     model: null,
     url: null,
     sk: null
 })
 
-function handleAddButton() {
+const isAddPanel = ref(true)
+const currentModel = ref(null)
+
+const canTest = ref(false)
+const testStatus = ref(null)
+const canAddOrUpdate = ref(false)
+
+
+const testButtonEnable = computed(() => {
+    return canTest.value && testStatus.value!=='testing'
+})
+const updateButtonEnable = computed(() => {
+    return currentModel.value!==null && modelConfig.value.model!==null && modelConfig.value.url!==null
+})
+
+watch(modelConfig, () => {
+    canTest.value = modelConfig.value.model!==null && modelConfig.value.url!==null
+}, {deep: true})
+
+
+function handleNewModel() {
     isAddPanel.value = true
     currentModel.value = null
     modelConfig.value = {
@@ -68,7 +83,8 @@ function handleAddButton() {
         url: null,
         sk: null
     }
-    addButtonEnable.value = false
+    canAddOrUpdate.value = false
+    testStatus.value = null
 }
 
 function handleModelSelected(index) {
@@ -79,28 +95,36 @@ function handleModelSelected(index) {
         url: props.models[index].baseURL,
         sk: props.models[index].apiKey
     }
-    addButtonEnable.value = false
+    canAddOrUpdate.value = false
+    testStatus.value = null
 }
 
-function addModel() {
-    props.models.push({
-        showName: modelConfig.value.model,
-        modelName: modelConfig.value.model,
-        baseURL: modelConfig.value.url,
-        apiKey: modelConfig.value.sk,
-        editable: false,
-        showPopup: false
-    })
-    currentModel.value += 1
+function addOrUpdateModel() {
+    if (updateButtonEnable) {
+        props.models[currentModel.value].modelName = modelConfig.value.model
+        props.models[currentModel.value].baseURL = modelConfig.value.url
+        props.models[currentModel.value].apiKey = modelConfig.value.sk
+    } else {
+        props.models.push({
+            showName: modelConfig.value.model,
+            modelName: modelConfig.value.model,
+            baseURL: modelConfig.value.url,
+            apiKey: modelConfig.value.sk,
+            editable: false,
+            showPopup: false
+        })
+        currentModel.value += 1
+    }
+    canAddOrUpdate.value = false
 }
 
 function removeModel() {
     props.models.splice(currentModel.value, 1)
-    handleAddButton()
+    handleNewModel()
 }
 
 async function testModel() {
-    isTesting.value = true
+    testStatus.value = "testing"
 
     const rawResponse = await fetch("/api/openai", {
         method: "POST",
@@ -122,8 +146,8 @@ async function testModel() {
     if (content.error) {
         alert(content.error.error.message)
     } else {
-        addButtonEnable.value = true
+        canAddOrUpdate.value = true
     }
-    isTesting.value = false
+    testStatus.value = "finished"
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div class="group flex w-full h-auto pl-2 border-b-[1px] justify-between hover:bg-gray-100">
+    <div class="group flex w-full h-auto border-b-[1px] justify-between hover:bg-gray-100">
         <div class="flex items-center justify-center w-[13%] h-12 mt-3">
             <button
                 @click="$emit('changeRole', message)"
