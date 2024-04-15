@@ -15,8 +15,8 @@ import { v4 as uuidv4 } from 'uuid'
 const system_prompt = ref('')
 const models = ref([])
 const config = ref({
-    model: "",
-    url: "",
+    model: null,
+    url: null,
     sk: "",
     temperature: 1,
     max_tokens: 256,
@@ -32,12 +32,19 @@ function setModelConfig(index) {
 onMounted(() => {
     if (localStorage.getItem("models")) {
         models.value = JSON.parse(localStorage.getItem("models"))
+        if (models.value.length > 0) {
+            setModelConfig(0)
+        }
     }
 })
 
-watch(models, (newVal, oldVal) => {
-    if (oldVal.length === 0 && newVal.length > 1) {
+watch(models, (newVal) => {
+    if (newVal.length === 1) {
         setModelConfig(0)
+    } else if (newVal.length === 0) {
+        config.value.model = null
+        config.value.url = null
+        config.value.sk = ""
     }
     localStorage.setItem("models", JSON.stringify(newVal))
 }, {deep: true})
@@ -52,7 +59,8 @@ const messages = ref([{
 
 const submit = ref({
     is_submit: false,
-    stop_generate: false
+    stop_generate: false,
+    isAvaiable: computed(() => config.value.url !== null && config.value.model !== null)
 })
 
 function changeInput(prompt) {
@@ -90,13 +98,16 @@ async function submitChat() {
             for (const parsedLine of parsedLines) {
                 const { choices } = parsedLine;
                 const { delta } = choices[0];
+
+                if (delta === null) continue
+
                 const { role, content } = delta;
 
                 if (nextRole === null) {
                     nextRole = role
                     messages.value.push({
                         role: role,
-                        content: content,
+                        content: content || '',
                         is_focus: false,
                         id: uuidv4()
                     })

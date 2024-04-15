@@ -1,13 +1,13 @@
 <template>
     <div class="group flex w-full h-auto pl-2 border-b-[1px] justify-between hover:bg-gray-100">
-        <div class="flex items-center justify-center w-[10%] h-12 mt-3">
+        <div class="flex items-center justify-center w-[13%] h-12 mt-3">
             <button
                 @click="$emit('changeRole', message)"
                 class="font-medium text-sm group-hover:bg-gray-300 px-2 py-2 rounded">
                 {{ message.role.toUpperCase() }}
             </button>
         </div>
-        <div class="flex w-[83%] justify-between h-auto my-3 ml-6">
+        <div class="flex w-[83%] justify-between h-auto my-3">
             <textarea
                 ref="textarea"
                 @input="inputHandler"

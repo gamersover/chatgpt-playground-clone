@@ -16,8 +16,9 @@
         </button>
 
         <button
+            :disabled="!submit.isAvaiable"
             @click="buttonClickHandler"
-            :class="{'bg-blue-500 hover:bg-blue-700' : !submit.is_submit, 'bg-red-500 hover:bg-red-700': submit.is_submit}"
+            :class="{'bg-gray-300': !submit.isAvaiable, 'bg-blue-500 hover:bg-blue-600' : !submit.is_submit && submit.isAvaiable, 'bg-red-500 hover:bg-red-600': submit.is_submit}"
             class="fixed transition bottom-5 rounded-md px-2 py-1 text-white">
             {{ submit.is_submit ? '取消' : '提交' }}
         </button>

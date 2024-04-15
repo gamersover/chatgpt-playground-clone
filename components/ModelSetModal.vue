@@ -29,8 +29,8 @@
                 <input v-model="modelConfig.sk" type="password" class="border-[1px] w-full h-[50px] rounded-lg p-2"/>
             </div>
             <div class="flex gap-2 self-end">
-                <button @click="testModel" :class="{'disable bg-gray-200': !isTestEnable, 'bg-green-500': isTestEnable}" class="text-white border-[1px] py-2 px-2 rounded-lg">测试</button>
-                <button @click="addModel" :class="{'disable bg-gray-200': !addButtonEnable}" class="bg-blue-500 text-white py-2 px-2 rounded-lg">添加</button>
+                <button @click="testModel" :class="{'disable bg-gray-200': !isTestEnable, 'bg-green-500 hover:bg-green-600': isTestEnable}" class="text-white border-[1px] py-2 px-2 rounded-lg">测试</button>
+                <button @click="addModel" :class="{'disable bg-gray-200': !addButtonEnable}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-2 rounded-lg">添加</button>
             </div>
         </div>
     </div>
