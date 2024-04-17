@@ -86,6 +86,7 @@ async function submitChat() {
         const decoder = new TextDecoder("utf-8")
         let nextRole = null
         while (true) {
+            if (submit.value.stop_generate) break
             const { done, value } = await reader.read()
             if (done) break
             const chunk = decoder.decode(value, { stream: true });
@@ -96,6 +97,7 @@ async function submitChat() {
                 .map((line) => JSON.parse(line))
 
             for (const parsedLine of parsedLines) {
+                if (submit.value.stop_generate) break
                 const { choices } = parsedLine;
                 const { delta } = choices[0];
 
@@ -116,8 +118,8 @@ async function submitChat() {
                     messages.value[messages.value.length - 1].content += content || ""
                 }
             }
-            submit.value.is_submit = false
         }
+        submit.value.is_submit = false
     }  catch (error) {
         console.log(error)
     } finally {

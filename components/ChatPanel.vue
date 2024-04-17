@@ -8,9 +8,9 @@
             :message="message"
             :key="message.id"
         />
-        <button @click="addMessage" class="flex pl-4 py-4 w-full hover:bg-gray-100">
-            <div class="flex text-sm gap-4 items-center">
-                <CircleAddIcon />
+        <button @click="addMessage" class="flex rounded-md pl-4 py-4 w-full hover:bg-gray-200">
+            <div class="flex font-medium text-md gap-4 items-center">
+                <CircleAddIcon size="20"/>
                 添加消息
             </div>
         </button>
@@ -19,7 +19,7 @@
             :disabled="!submit.isAvaiable"
             @click="buttonClickHandler"
             :class="{'bg-gray-300': !submit.isAvaiable, 'bg-blue-500 hover:bg-blue-600' : !submit.is_submit && submit.isAvaiable, 'bg-red-500 hover:bg-red-600': submit.is_submit}"
-            class="fixed transition bottom-5 rounded-md px-2 py-1 text-white">
+            class="fixed transition-colors bottom-5 rounded-md px-2 py-1 text-white">
             {{ submit.is_submit ? '取消' : '提交' }}
         </button>
     </div>

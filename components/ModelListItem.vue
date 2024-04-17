@@ -1,5 +1,5 @@
 <template>
-    <button @click="emits('handleModelSelected')" :class="{'bg-gray-200/50': isSelected}" class="hover:bg-gray-200/50 w-full px-2 py-1 rounded-md text-start">
+    <button @click="emits('handleModelSelected')" :class="{'bg-gray-200': isSelected}" class="hover:bg-gray-200 w-full px-2 py-1 rounded-md text-start">
         <div class="flex justify-between relative">
             <div ref="name" :contenteditable="model.editable" @blur="updateName" class="overflow-hidden text-nowrap w-28 max-w-28 h-8 flex items-center">{{ model.showName }}</div>
             <button v-show="isSelected" @click="model.showPopup=!(model.showPopup)">

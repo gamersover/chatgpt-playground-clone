@@ -9,7 +9,7 @@
     <div class="flex flex-1">
         <ul class="flex flex-col w-[230px] px-4 pt-4">
             <li>
-                <button @click="handleNewModel" :class="{'bg-gray-100': isAddPanel}" class="hover:bg-gray-100 w-full p-2 rounded-md text-start">新建</button>
+                <button @click="handleNewModel" :class="{'bg-gray-200': isAddPanel}" class="hover:bg-gray-200 w-full p-2 rounded-md text-start">新建</button>
             </li>
             <li v-for="(model, index) in models" :key="index">
                 <ModelListItem :isSelected="currentModel===index" @HandleModelSelected="handleModelSelected(index)" @RemoveModel="removeModel" :model="model"/>
@@ -100,7 +100,7 @@ function handleModelSelected(index) {
 }
 
 function addOrUpdateModel() {
-    if (updateButtonEnable) {
+    if (updateButtonEnable.value) {
         props.models[currentModel.value].modelName = modelConfig.value.model
         props.models[currentModel.value].baseURL = modelConfig.value.url
         props.models[currentModel.value].apiKey = modelConfig.value.sk
@@ -113,7 +113,8 @@ function addOrUpdateModel() {
             editable: false,
             showPopup: false
         })
-        currentModel.value += 1
+        currentModel.value = props.models.length - 1
+        isAddPanel.value = false
     }
     canAddOrUpdate.value = false
 }

@@ -1,9 +1,9 @@
 <template>
-    <div class="group flex w-full h-auto border-b-[1px] justify-between hover:bg-gray-100">
-        <div class="flex items-center justify-center w-[13%] h-12 mt-3">
+    <div class="group flex w-full h-auto rounded-md border-gray-200 border-b-[1px] justify-between hover:bg-gray-200">
+        <div class="flex items-center justify-left h-12 w-[8rem] pl-4 mt-3">
             <button
                 @click="$emit('changeRole', message)"
-                class="font-medium text-sm group-hover:bg-gray-300 px-2 py-2 rounded">
+                class="font-medium text-sm group-hover:bg-gray-300 px-2 py-2 rounded-lg">
                 {{ message.role.toUpperCase() }}
             </button>
         </div>
@@ -14,12 +14,12 @@
                 v-model="message.content"
                 type="text"
                 :placeholder="message.role === 'user' ? 'Type user message here.' : 'Type assistant message here.'"
-                class="font-light w-full p-3 inline-block h-12 overflow-y-hidden resize-none rounded-lg border-[1px] focus:border-blue-500 border-transparent focus:outline-none focus:border-solid group-hover:bg-gray-100 focus:!bg-white"
+                class="font-light w-full p-3 inline-block h-12 overflow-y-hidden resize-none rounded-lg border-[2px] focus:border-blue-500 border-transparent focus:outline-none focus:border-solid group-hover:bg-gray-200 focus:!bg-white"
             />
         </div>
         <div class="flex flex-1 h-12 mt-3 items-center justify-center">
             <button @click="$emit('removeRole')" class="text-white group-hover:text-gray-400 hover:!text-black">
-                <CircleMinusIcon />
+                <CircleMinusIcon size="20"/>
             </button>
         </div>
     </div>
