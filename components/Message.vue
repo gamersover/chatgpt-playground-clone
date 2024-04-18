@@ -7,7 +7,7 @@
                 {{ message.role.toUpperCase() }}
             </button>
         </div>
-        <div class="flex w-[83%] justify-between h-auto my-3">
+        <div class="flex flex-1 justify-between h-auto my-3">
             <textarea
                 ref="textarea"
                 @input="inputHandler"
@@ -17,7 +17,7 @@
                 class="font-light w-full p-3 inline-block h-12 overflow-y-hidden resize-none rounded-lg border-[2px] focus:border-blue-500 border-transparent focus:outline-none focus:border-solid group-hover:bg-gray-200 focus:!bg-white"
             />
         </div>
-        <div class="flex flex-1 h-12 mt-3 items-center justify-center">
+        <div class="flex w-10 h-12 mt-3 items-center justify-center">
             <button @click="$emit('removeRole')" class="text-white group-hover:text-gray-400 hover:!text-black">
                 <CircleMinusIcon size="20"/>
             </button>
