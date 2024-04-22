@@ -1,65 +1,89 @@
 <template>
-    <div class="flex flex-col w-64 gap-4 text-sm font-light h-full p-2 mr-2">
-        <div>
+    <div class="flex flex-col w-64 gap-5 text-sm font-light h-full p-2 mr-2">
+        <div class="flex flex-col gap-3">
             <p>Model</p>
-            <select @input="changeModel" class="border-[1px] w-full rounded-md mt-2 p-2 focus:border-e-blue-300">
-                <option disabled>CHAT</option>
-                <option v-for="(model, index) in models"
-                        :key="index"
-                        :selected="selectedModel===index"
-                        :value="index">
-                        {{ model.showName }}
-                </option>
-            </select>
+            <UInputMenu
+                v-model="selectedModel"
+                :options="models"
+                by="id"
+                option-attribute="showName"
+                trailing-icon="i-heroicons-chevron-up-down-20-solid"
+                color="blue"
+                size="lg"
+                :ui="{
+                    'variant': {'outline': 'ring-gray-300'},
+                }"
+                @change="setModelConfig"
+            >
+            </UInputMenu>
         </div>
-        <div>
+        <div class="flex flex-col gap-3">
             <div class="flex justify-between">
                 <p>Temperature</p>
-                <input
-                    :value="config.temperature"
-                    @blur="changeTemperature"
+                <UInput
+                    v-model="config.temperature"
+                    color="blue"
+                    :ui="{
+                        'base': 'w-16 !py-0.5 !px-1 text-right',
+                        'rounded': 'rounded-md',
+                        'variant': {'outline': 'ring-0 shadow-none hover:ring-1 hover:ring-gray-300'},
+                    }"
                     placeholder="1"
-                    class="w-12 text-right rounded-md border-2 border-white focus:outline-none hover:border-gray-300 focus:border-blue-500"
-                />
+                    @blur="changeTemperature"
+                    :padded="false"
+                >
+                </UInput>
             </div>
-            <input
-                :value="config.temperature"
-                @input="changeTemperature"
-                type="range"
-                min="0"
-                max="2"
-                step="0.01"
-                class="w-full cursor-pointer mt-2"
-            />
+            <URange
+                v-model="config.temperature"
+                :min="0"
+                :max="2"
+                :step="0.01"
+                color="blue"
+                size="sm"
+            >
+            </URange>
         </div>
-        <div>
+        <div class="flex flex-col gap-3">
             <div class="flex justify-between">
                 <p>Max Tokens</p>
-                <input
-                    :value="config.max_tokens"
+                <UInput
+                    v-model="config.max_tokens"
+                    color="blue"
+                    :ui="{
+                        'base': 'w-16 !py-0.5 !px-1 text-right',
+                        'rounded': 'rounded-md',
+                        'variant': {'outline': 'ring-0 shadow-none hover:ring-1 hover:ring-gray-300'},
+                    }"
+                    placeholder="2048"
                     @blur="changeMaxTokens"
-                    placeholder="256"
-                    class="w-12 text-right rounded-md border-2 border-white focus:outline-none hover:border-gray-300 focus:border-blue-500"
-                />
+                    :padded="false"
+                >
+                </UInput>
             </div>
-            <input
-                :value="config.max_tokens"
-                @input="changeMaxTokens"
-                type="range"
-                min="0"
-                max="4096"
-                step="1"
-                class="w-full cursor-pointer mt-2"
-            />
+            <URange
+                v-model="config.max_tokens"
+                :min="0"
+                :max="4096"
+                :step="1"
+                color="blue"
+                size="sm"
+            >
+            </URange>
         </div>
         <div>
             <p>Stop</p>
-            <div class="flex w-full p-2 mt-2 rounded-md border-[1px] hover:border-blue-500">
-                <div class="flex flex-wrap w-[90%] gap-1 text-sm">
+            <div class="flex h-auto min-h-10 w-full p-2 mt-2 rounded-md border-2 hover:border-blue-500">
+                <div class="flex flex-wrap w-full gap-1 text-sm">
                     <Chip v-for="(stopword, index) of config.stop" :key="index" :stopword="stopword" @click="removeStopWord(index)"></Chip>
-                    <div class="flex w-auto min-w-2">
-                        <input class="border-none box-border w-full h-full outline-none" @blur="addStopWord" v-model.trim="stop_word"/>
-                    </div>
+                    <UInput
+                        v-model.trim="stop_word"
+                        @blur="addStopWord"
+                        :ui="{'base': 'max-w-fit h-full'}"
+                        variant="none"
+                        :padded="false"
+                    >
+                    </UInput>
                 </div>
             </div>
         </div>
@@ -70,17 +94,14 @@
 <script setup>
 const props = defineProps(['config', 'models'])
 const stop_word = ref('')
-const selectedModel = ref(0)
+const selectedModel = ref(null)
 
-function setModelConfig(index) {
-    props.config.model = props.models[index].modelName
-    props.config.url = props.models[index].baseURL
-    props.config.sk = props.models[index].apiKey
-}
-
-function changeModel(e) {
-    selectedModel.value = e.target.value
-    setModelConfig(selectedModel.value)
+function setModelConfig() {
+    if (selectedModel.value) {
+        props.config.model = selectedModel.value.modelName
+        props.config.url = selectedModel.value.baseURL
+        props.config.sk = selectedModel.value.apiKey
+    }
 }
 
 function changeTemperature(e) {
@@ -124,4 +145,12 @@ function addStopWord() {
 function removeStopWord(index) {
     props.config.stop.splice(index, 1)
 }
+
+watch(() => props.models, (newVal) => {
+    if (selectedModel.value && !newVal.includes(selectedModel.value)) {
+        selectedModel.value = null
+    } else if (!selectedModel.value && newVal.length > 0) {
+        selectedModel.value = newVal[0]
+    }
+}, {deep: true})
 </script>

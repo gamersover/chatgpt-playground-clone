@@ -1,18 +1,21 @@
 <template>
     <div class="flex flex-col h-screen">
-        <Header :models="models"/>
+        <Header :models="models" :prompt="system_prompt" :messages="messages" @load-preset="loadPreset"/>
         <div class="flex-1 overflow-scroll m-4 gap-6 flex justify-center items-start">
             <SystemPanel :systemPrompt="system_prompt" @change-input="changeInput"/>
             <ChatPanel :messages="messages" :submit="submit" @submit-chat="submitChat"/>
             <ConfigPanel :config="config" :models="models"/>
         </div>
+        <UNotifications/>
     </div>
 </template>
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid'
 
-const system_prompt = ref('')
+const toast = useToast()
+
+const system_prompt = ref({content: ''})
 const models = ref([])
 const config = ref({
     model: null,
@@ -23,10 +26,37 @@ const config = ref({
     stop: []
 })
 
+const messages = ref([{
+    role: "user",
+    content: "",
+    id: uuidv4()
+}])
+
+const submit = ref({
+    is_submit: false,
+    stop_generate: false,
+    isAvaiable: computed(() => config.value.url !== null && config.value.model !== null)
+})
+
 function setModelConfig(index) {
     config.value.model = models.value[index].modelName
     config.value.url = models.value[index].baseURL
     config.value.sk = models.value[index].apiKey
+}
+
+function loadPreset(preset) {
+    system_prompt.value.content = preset.system
+    if (preset.messages) {
+        messages.value = preset.messages
+    } else {
+        messages.value = [{role: "user", content: "", id: uuidv4()}]
+    }
+    toast.add({
+        title: "成功",
+        description: "场景已加载",
+        icon: "i-heroicons-check-circle-20-solid",
+        color: "green",
+    })
 }
 
 onMounted(() => {
@@ -49,19 +79,6 @@ watch(models, (newVal) => {
     localStorage.setItem("models", JSON.stringify(newVal))
 }, {deep: true})
 
-
-const messages = ref([{
-    role: "user",
-    content: "",
-    is_focus: true,
-    id: uuidv4()
-}])
-
-const submit = ref({
-    is_submit: false,
-    stop_generate: false,
-    isAvaiable: computed(() => config.value.url !== null && config.value.model !== null)
-})
 
 function changeInput(prompt) {
     system_prompt.value = prompt

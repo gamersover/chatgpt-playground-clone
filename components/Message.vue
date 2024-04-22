@@ -1,62 +1,61 @@
 <template>
-    <div class="group flex w-full h-auto rounded-md border-gray-200 border-b-[1px] justify-between hover:bg-gray-200">
-        <div class="flex items-center justify-left h-12 w-[8rem] pl-4 mt-3">
-            <button
+    <div :class="{'bg-gray-200': isFocus}" class="group flex w-full h-auto rounded-lg transition-colors border-gray-200 border-b-[1px] justify-between hover:bg-gray-200">
+        <div class="flex items-center justify-left h-12 w-[8rem] pl-4 mt-2.5">
+            <UButton
                 @click="$emit('changeRole', message)"
-                class="font-medium text-sm group-hover:bg-gray-300 px-2 py-2 rounded-lg">
+                class="bg-gray-200 group-hover:bg-gray-300 shadow-none rounded-lg text-black"
+            >
                 {{ message.role.toUpperCase() }}
-            </button>
+            </UButton>
         </div>
         <div class="flex flex-1 justify-between h-auto my-3">
-            <textarea
+            <UTextarea
                 ref="textarea"
-                @input="inputHandler"
+                autoresize
                 v-model="message.content"
-                type="text"
+                color="blue"
+                size="xl"
+                :rows="1"
+                class="w-full"
+                :ui="{'variant': {'outline': 'ring-0 shadow-none focus:bg-white'}, 'base': 'font-light'}"
+                @focus="handleFocus"
+                @blur="handleBlur"
                 :placeholder="message.role === 'user' ? 'Type user message here.' : 'Type assistant message here.'"
-                class="font-light w-full p-3 inline-block h-12 overflow-y-hidden resize-none rounded-lg border-[2px] focus:border-blue-500 border-transparent focus:outline-none focus:border-solid group-hover:bg-gray-200 focus:!bg-white"
-            />
+            >
+            </UTextarea>
         </div>
-        <div class="flex w-10 h-12 mt-3 items-center justify-center">
-            <button @click="$emit('removeRole')" class="text-white group-hover:text-gray-400 hover:!text-black">
-                <CircleMinusIcon size="20"/>
-            </button>
+        <div class="flex w-10 h-12 mt-2.5 items-center justify-center">
+            <UButton
+                @click="$emit('removeRole')"
+                :padded=false
+                color="black"
+                variant="ghost"
+                class="text-white group-hover:text-gray-400 hover:!text-black"
+                :class="{'text-gray-400': isFocus}"
+            >
+                <IconCircleMinus size="20"/>
+            </UButton>
         </div>
     </div>
 </template>
 
 <script setup>
-import CircleMinusIcon from './icon/CircleMinusIcon.vue'
-
 const props = defineProps(['message'])
 const textarea = ref(null)
 const emits = defineEmits(['changeRole', 'removeRole', 'autoExpand'])
 
+const isFocus = ref(false)
 
-function autoExpand() {
-    let new_height = textarea.value.scrollHeight > 48 ? textarea.value.scrollHeight : 48
-    new_height = parseInt(new_height / 24) * 24
-    textarea.value.style.height = `${new_height}px`
-    textarea.value.scrollTop = textarea.value.scrollHeight
+function handleFocus() {
+    textarea.value.textarea.focus()
+    isFocus.value = true
 }
 
-function inputHandler(e) {
-    emits("autoExpand")
-    autoExpand()
-    props.message.content = e.target.value
+function handleBlur() {
+    isFocus.value = false
 }
 
-watch(() => props.message.content, async () => {
-    await nextTick()
-    emits('autoExpand')
-    autoExpand()
+onMounted(() => {
+    textarea.value.textarea?.focus()
 })
-
-onMounted(
-    () => {
-        if (props.message.is_focus) {
-            textarea.value.focus()
-        }
-    }
-)
 </script>

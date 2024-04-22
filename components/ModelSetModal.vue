@@ -1,40 +1,91 @@
 <template>
-<div class="flex flex-col w-[750px] h-[500px] max-w-[750px] max-h-[600px] bg-white rounded-2xl shadow-md">
-    <div class="h-20 flex justify-between items-center border-b-[1px] px-4">
+<div class="flex flex-col max-w-[750px] bg-white rounded-2xl">
+    <div class="h-16 flex justify-between items-center border-b-[1px] px-4">
         <h1 class="font-medium text-2xl">设置</h1>
-        <button @click="emits('closeModal')" class="w-5 h-5 hover:text-gray-700">
-            <CloseIcon size="24"/>
-        </button>
+        <UButton
+            @click="emits('closeModal')"
+            variant="ghost"
+            color="black"
+            class="text-gray-700 hover:text-black"
+        >
+            <IconClose size="24"/>
+        </UButton>
     </div>
     <div class="flex flex-1">
-        <ul class="flex flex-col w-[230px] px-4 pt-4">
+        <ul class="flex flex-col w-[180px] px-4 pt-4">
             <li>
-                <button @click="handleNewModel" :class="{'bg-gray-200': isAddPanel}" class="hover:bg-gray-200 w-full p-2 rounded-md text-start">新建</button>
+                <UButton
+                    @click="handleNewModel"
+                    :class="{'bg-gray-200': isAddPanel}"
+                    class="hover:bg-gray-200 font-normal text-base w-full p-2 text-start"
+                    label="新建"
+                    variant="ghost"
+                    color="black"
+                >
+                </UButton>
             </li>
             <li v-for="(model, index) in models" :key="index">
                 <ModelListItem :isSelected="currentModel===index" @HandleModelSelected="handleModelSelected(index)" @RemoveModel="removeModel" :model="model"/>
             </li>
         </ul>
-        <div class="flex flex-col flex-1 justify-around items-center gap-10 p-4">
+        <div class="flex flex-col flex-1 justify-around items-center gap-6 p-4">
             <div class="flex flex-col gap-2 w-full">
                 <p><span class="text-red-500">*</span> Model UID</p>
-                <input v-model="modelConfig.model" class="border-[1px] w-full h-[50px] rounded-lg p-2"/>
+                <UInput
+                    v-model.trim="modelConfig.model"
+                    :ui="{
+                        'base': 'w-full h-[48px]',
+                        'variant': {'outline': 'ring-gray-300'},
+                    }"
+                    color="blue"
+                    size="xl"
+                >
+                </UInput>
             </div>
             <div class="flex flex-col gap-2 w-full">
                 <p><span class="text-red-500">*</span> Base URL</p>
-                <input v-model="modelConfig.url" class="border-[1px] w-full h-[50px] rounded-lg p-2"/>
+                <UInput
+                    v-model.trim="modelConfig.url"
+                    :ui="{
+                        'base': 'w-full h-[48px]',
+                        'variant': {'outline': 'ring-gray-300'},
+                    }"
+                    color="blue"
+                    size="xl"
+                >
+                </UInput>
             </div>
             <div class="flex flex-col gap-2 w-full">
-                <p>Secret Key (Optional)</p>
-                <input v-model="modelConfig.sk" type="password" class="border-[1px] w-full h-[50px] rounded-lg p-2"/>
+                <p>Secret Key <span class="font-light">可选</span></p>
+                <UInput
+                    v-model.trim="modelConfig.sk"
+                    :ui="{
+                        'base': 'w-full h-[48px]',
+                        'variant': {'outline': 'ring-gray-300'},
+                    }"
+                    color="blue"
+                    size="xl"
+                    type="password"
+                >
+                </UInput>
             </div>
             <div class="flex gap-2 self-end">
-                <button @click="testModel" :disabled="!testButtonEnable" :class="{'bg-gray-200': !testButtonEnable, 'bg-green-500 hover:bg-green-600': testButtonEnable}" class="text-white border-[1px] py-2 px-2 rounded-lg">
-                    测试
-                </button>
-                <button @click="addOrUpdateModel" :disabled="!canAddOrUpdate" :class="{'bg-gray-200': !canAddOrUpdate, 'bg-blue-500 hover:bg-blue-600': canAddOrUpdate}" class="text-white py-2 px-2 rounded-lg">
-                    {{ updateButtonEnable ? '更新' : ' 添加' }}
-                </button>
+                <UButton
+                    @click="testModel"
+                    label="测试"
+                    size="xl"
+                    :disabled="!testButtonEnable"
+                    :loading="testStatus==='testing'"
+                >
+                </UButton>
+                <UButton
+                   @click="addOrUpdateModel"
+                   :label="updateButtonEnable ? '更新' : ' 添加'"
+                   size="xl"
+                   :disabled="!canAddOrUpdate"
+                   color="blue"
+                >
+                </UButton>
             </div>
         </div>
     </div>
@@ -43,11 +94,12 @@
 
 
 <script setup>
-import CloseIcon from './icon/CloseIcon.vue'
+import { v4 as uuidv4 } from 'uuid'
 
-
+const toast = useToast()
 const emits = defineEmits(["closeModal"])
 const props = defineProps(['models'])
+
 
 const modelConfig = ref({
     model: null,
@@ -71,7 +123,10 @@ const updateButtonEnable = computed(() => {
 })
 
 watch(modelConfig, () => {
-    canTest.value = modelConfig.value.model!==null && modelConfig.value.url!==null
+    canTest.value = (
+        modelConfig.value.model!==null && modelConfig.value.url!==null
+        && modelConfig.value.model.length > 0 && modelConfig.value.url.length > 0
+    )
 }, {deep: true})
 
 
@@ -104,8 +159,15 @@ function addOrUpdateModel() {
         props.models[currentModel.value].modelName = modelConfig.value.model
         props.models[currentModel.value].baseURL = modelConfig.value.url
         props.models[currentModel.value].apiKey = modelConfig.value.sk
+        toast.add({
+            title: '成功',
+            description: '模型已更新',
+            color: 'green',
+            icon: 'i-heroicons-check-circle-20-solid',
+        })
     } else {
         props.models.push({
+            id: uuidv4(),
             showName: modelConfig.value.model,
             modelName: modelConfig.value.model,
             baseURL: modelConfig.value.url,
@@ -115,6 +177,12 @@ function addOrUpdateModel() {
         })
         currentModel.value = props.models.length - 1
         isAddPanel.value = false
+        toast.add({
+            title: '成功',
+            description: '模型已添加',
+            color: 'green',
+            icon: 'i-heroicons-check-circle-20-solid',
+        })
     }
     canAddOrUpdate.value = false
 }
@@ -127,28 +195,48 @@ function removeModel() {
 async function testModel() {
     testStatus.value = "testing"
 
-    const rawResponse = await fetch("/api/openai", {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            ...modelConfig.value,
-            messages: [{role: "user", content: "Hello!"}],
-            max_tokens: 1,
-            temperature: 0.7,
-            stop: [],
-            stream: false
+    try {
+        const rawResponse = await fetch("/api/openai", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...modelConfig.value,
+                messages: [{role: "user", content: "Hello!"}],
+                max_tokens: 1,
+                temperature: 0.7,
+                stop: [],
+                stream: false
+            })
         })
-    })
-    const content = await rawResponse.json()
-
-    if (content.error) {
-        alert(content.error.error.message)
-    } else {
-        canAddOrUpdate.value = true
+        const content = await rawResponse.json()
+        if (content.error) {
+            toast.add({
+                description: content.error.message || content.error,
+                title: '失败',
+                color: "red",
+                icon: "i-heroicons-exclamation-circle-20-solid",
+            })
+        } else {
+            toast.add({
+                title: '成功',
+                description: '模型测试通过',
+                color: 'green',
+                icon: 'i-heroicons-check-circle-20-solid',
+            })
+            canAddOrUpdate.value = true
+        }
+        testStatus.value = "finished"
+    } catch (e) {
+        toast.add({
+            title: '失败',
+            description: e.toString(),
+            color: 'red',
+            icon: 'i-heroicons-exclamation-circle-20-solid',
+        })
+        testStatus.value = "finished"
     }
-    testStatus.value = "finished"
 }
 </script>

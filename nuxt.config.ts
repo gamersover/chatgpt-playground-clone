@@ -7,14 +7,13 @@ export default defineNuxtConfig({
   devServer: {
     port: process.env.PORT ? parseInt(process.env.PORT) : 3000
   },
+
   devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss"],
+
   runtimeConfig: {
     public: {
       PORT: process.env.PORT
     }
   },
-  plugins: [
-    '~/plugins/clickoutside.js'
-  ]
+  modules: ["@nuxt/ui"]
 })

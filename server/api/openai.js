@@ -18,8 +18,7 @@ export default defineEventHandler(async (event) => {
         })
         return sendStream(event, response.body)
     } catch (e) {
-        console.log(e)
-        return {error: e}
+        return {error: e.toString()}
     }
 
 })

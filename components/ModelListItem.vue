@@ -1,23 +1,37 @@
 <template>
-    <button @click="emits('handleModelSelected')" :class="{'bg-gray-200': isSelected}" class="hover:bg-gray-200 w-full px-2 py-1 rounded-md text-start">
-        <div class="flex justify-between relative">
-            <div ref="name" :contenteditable="model.editable" @blur="updateName" class="overflow-hidden text-nowrap w-28 max-w-28 h-8 flex items-center">{{ model.showName }}</div>
-            <button v-show="isSelected" @click="model.showPopup=!(model.showPopup)">
-                <ThreeDotIcon />
-            </button>
-            <ModelNamePopup @ChangeModelName="changeName" @DeleteModel="deleteModel" :model="model"/>
+    <UButton
+        @click="emits('handleModelSelected')"
+        color="black"
+        variant="ghost"
+        :class="{'bg-gray-200': isSelected}"
+        class="hover:bg-gray-200 w-full"
+    >
+        <div class="flex justify-between w-full relative">
+            <div
+                ref="name" :contenteditable="model.editable" @blur="updateName"
+                class="overflow-hidden text-nowrap w-28 max-w-28 h-8 text-base font-normal flex items-center">
+                {{ model.showName }}
+            </div>
+            <UDropdown :items="settings" :popper="{placement: 'bottom-start'}">
+                <UButton
+                    v-show="isSelected"
+                    color="black"
+                    variant="ghost"
+                    :padded="false"
+                >
+                    <IconThreeDot size="24"/>
+                </UButton>
+            </UDropdown>
         </div>
-    </button>
+    </UButton>
 </template>
 
 <script setup>
-import ThreeDotIcon from './icon/ThreeDotIcon.vue'
-
-
 const props = defineProps(['model', 'isSelected'])
 const emits = defineEmits(['handleModelSelected', 'removeModel'])
 
 const name = ref(null)
+
 
 async function changeName() {
     props.model.editable = true
@@ -49,4 +63,23 @@ function deleteModel() {
     emits('removeModel')
     props.model.showPopup = false
 }
+
+const settings = [
+    [{
+        label: "重命名",
+        click: () => {
+            changeName()
+        },
+        icon: "i-heroicons-pencil-square",
+        class: "text-base"
+    },{
+        label: "删除",
+        click: () => {
+            deleteModel()
+        },
+        icon: "i-heroicons-trash",
+        class: "text-red-500 text-base",
+        iconClass: "text-red-500"
+    }]
+]
 </script>

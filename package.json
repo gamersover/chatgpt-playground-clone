@@ -10,14 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/ui": "^2.15.2",
     "@vueuse/components": "^10.9.0",
     "dotenv": "^16.4.5",
     "nuxt": "^3.10.3",
     "uuid": "^9.0.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
-  },
-  "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.11.4"
   }
 }

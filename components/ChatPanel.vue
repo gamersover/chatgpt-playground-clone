@@ -8,27 +8,39 @@
             :message="message"
             :key="message.id"
         />
-        <button @click="addMessage" class="flex rounded-md pl-4 py-4 w-full hover:bg-gray-200">
-            <div class="flex font-medium text-md gap-4 items-center">
-                <CircleAddIcon size="20"/>
-                添加消息
-            </div>
-        </button>
+        <UButton
+            variant="ghost"
+            color="black"
+            class="pl-4 py-4 hover:bg-gray-200"
+            @click="addMessage"
+            label="添加消息"
+        >
+            <template #leading>
+                <IconCircleAdd size="20"/>
+            </template>
+        </UButton>
 
-        <button
+        <UButton
+            :label="submit.is_submit ? '取消' : '提交'"
+            class="fixed bottom-5 text-base py-1.5"
+            size="lg"
+            :color="submit.is_submit ? 'red' : 'blue'"
+            @click="buttonClickHandler"
+            :disabled="!submit.isAvaiable"
+        >
+        </UButton>
+        <!-- <button
             :disabled="!submit.isAvaiable"
             @click="buttonClickHandler"
             :class="{'bg-gray-300': !submit.isAvaiable, 'bg-blue-500 hover:bg-blue-600' : !submit.is_submit && submit.isAvaiable, 'bg-red-500 hover:bg-red-600': submit.is_submit}"
             class="fixed transition-colors bottom-5 rounded-md px-2 py-1 text-white">
             {{ submit.is_submit ? '取消' : '提交' }}
-        </button>
+        </button> -->
     </div>
 </template>
 
 
 <script setup>
-import CircleAddIcon from './icon/CircleAddIcon.vue'
-
 import { v4 as uuidv4 } from 'uuid'
 
 const props = defineProps(['messages', 'submit'])
