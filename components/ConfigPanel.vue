@@ -18,7 +18,7 @@
             </UInputMenu>
         </div>
         <div class="flex flex-col gap-3">
-            <div class="flex justify-between">
+            <div class="flex justify-between group">
                 <p>Temperature</p>
                 <UInput
                     v-model="config.temperature"
@@ -26,7 +26,7 @@
                     :ui="{
                         'base': 'w-16 !py-0.5 !px-1 text-right',
                         'rounded': 'rounded-md',
-                        'variant': {'outline': 'ring-0 shadow-none hover:ring-1 hover:ring-gray-300'},
+                        'variant': {'outline': 'ring-0 shadow-none group-hover:ring-1 hover:ring-gray-300'},
                     }"
                     placeholder="1"
                     @blur="changeTemperature"
@@ -45,7 +45,7 @@
             </URange>
         </div>
         <div class="flex flex-col gap-3">
-            <div class="flex justify-between">
+            <div class="flex justify-between group">
                 <p>Max Tokens</p>
                 <UInput
                     v-model="config.max_tokens"
@@ -53,7 +53,7 @@
                     :ui="{
                         'base': 'w-16 !py-0.5 !px-1 text-right',
                         'rounded': 'rounded-md',
-                        'variant': {'outline': 'ring-0 shadow-none hover:ring-1 hover:ring-gray-300'},
+                        'variant': {'outline': 'ring-0 shadow-none group-hover:ring-1 hover:ring-gray-300'},
                     }"
                     placeholder="2048"
                     @blur="changeMaxTokens"

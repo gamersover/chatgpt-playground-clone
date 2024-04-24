@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'bg-gray-200': isFocus}" class="group flex w-full h-auto rounded-lg transition-colors border-gray-200 border-b-[1px] justify-between hover:bg-gray-200">
+    <div :class="{'bg-gray-200 rounded-lg': isFocus}" class="group flex w-full h-auto hover:rounded-lg transition-colors border-gray-200 border-b-[1px] justify-between hover:bg-gray-200">
         <div class="flex items-center justify-left h-12 w-[8rem] pl-4 mt-2.5">
             <UButton
                 @click="$emit('changeRole', message)"
@@ -24,7 +24,7 @@
             >
             </UTextarea>
         </div>
-        <div class="flex w-10 h-12 mt-2.5 items-center justify-center">
+        <div class="flex w-14 h-12 mt-2.5 items-center justify-center">
             <UButton
                 @click="$emit('removeRole')"
                 :padded=false

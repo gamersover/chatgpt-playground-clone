@@ -8,7 +8,9 @@
     >
         <div class="flex justify-between w-full relative">
             <div
-                ref="name" :contenteditable="model.editable" @blur="updateName"
+                ref="name" :contenteditable="model.editable"
+                @blur="updateName"
+                @dblclick="changeName"
                 class="overflow-hidden text-nowrap w-28 max-w-28 h-8 text-base font-normal flex items-center">
                 {{ model.showName }}
             </div>

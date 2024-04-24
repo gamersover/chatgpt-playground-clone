@@ -1,5 +1,5 @@
 <template>
-<div class="flex flex-col max-w-[750px] bg-white rounded-2xl">
+<div class="flex flex-col bg-white rounded-2xl">
     <div class="h-16 flex justify-between items-center border-b-[1px] px-4">
         <h1 class="font-medium text-2xl">设置</h1>
         <UButton
@@ -12,7 +12,7 @@
         </UButton>
     </div>
     <div class="flex flex-1">
-        <ul class="flex flex-col w-[180px] px-4 pt-4">
+        <ul class="flex flex-col w-[220px] px-4 pt-4">
             <li>
                 <UButton
                     @click="handleNewModel"

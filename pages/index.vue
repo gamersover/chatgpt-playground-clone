@@ -1,6 +1,12 @@
 <template>
-    <div class="flex flex-col h-screen">
-        <Header :models="models" :prompt="system_prompt" :messages="messages" @load-preset="loadPreset"/>
+    <div class="flex flex-col h-screen dark:bg-[#202123]">
+        <Header
+            :models="models"
+            :prompt="system_prompt"
+            :messages="messages"
+            @load-preset="loadPreset"
+            @reset-preset="resetPreset"/>
+        <UDivider :ui="{'border': {'base':  'dark:border-black'}}"/>
         <div class="flex-1 overflow-scroll m-4 gap-6 flex justify-center items-start">
             <SystemPanel :systemPrompt="system_prompt" @change-input="changeInput"/>
             <ChatPanel :messages="messages" :submit="submit" @submit-chat="submitChat"/>
@@ -59,6 +65,17 @@ function loadPreset(preset) {
     })
 }
 
+function resetPreset() {
+    system_prompt.value.content = ""
+    messages.value = [{role: "user", content: "", id: uuidv4()}]
+    toast.add({
+        title: "成功",
+        description: "场景已重置",
+        icon: "i-heroicons-check-circle-20-solid",
+        color: "green",
+    })
+}
+
 onMounted(() => {
     if (localStorage.getItem("models")) {
         models.value = JSON.parse(localStorage.getItem("models"))
@@ -94,7 +111,7 @@ async function submitChat() {
             },
             body: JSON.stringify({
                 ...config.value,
-                messages: [{role: "system", content: system_prompt.value}, ...messages.value.map(({role, content}) => ({role: role, content: content}))],
+                messages: [{role: "system", content: system_prompt.value.content}, ...messages.value.map(({role, content}) => ({role: role, content: content}))],
                 stream: true
             })
         })
