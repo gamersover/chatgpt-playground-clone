@@ -20,22 +20,19 @@
             </template>
         </UButton>
 
-        <UButton
-            :label="submit.is_submit ? '取消' : '提交'"
-            class="fixed bottom-5 text-base py-1.5"
-            size="lg"
-            :color="submit.is_submit ? 'red' : 'blue'"
-            @click="buttonClickHandler"
-            :disabled="!submit.isAvaiable"
-        >
-        </UButton>
-        <!-- <button
-            :disabled="!submit.isAvaiable"
-            @click="buttonClickHandler"
-            :class="{'bg-gray-300': !submit.isAvaiable, 'bg-blue-500 hover:bg-blue-600' : !submit.is_submit && submit.isAvaiable, 'bg-red-500 hover:bg-red-600': submit.is_submit}"
-            class="fixed transition-colors bottom-5 rounded-md px-2 py-1 text-white">
-            {{ submit.is_submit ? '取消' : '提交' }}
-        </button> -->
+        <div class="fixed bottom-5">
+            <UTooltip :text="submit.is_submit ? '取消' : '提交'" :shortcuts="['⌘', 'Enter']">
+                <UButton
+                    :label="submit.is_submit ? '取消' : '提交'"
+                    class="text-base py-1.5"
+                    size="lg"
+                    :color="submit.is_submit ? 'red' : 'blue'"
+                    @click="buttonClickHandler"
+                    :disabled="!submit.isAvaiable"
+                >
+                </UButton>
+            </UTooltip>
+        </div>
     </div>
 </template>
 
@@ -89,4 +86,10 @@ function buttonClickHandler() {
         emits('submitChat')
     }
 }
+
+defineShortcuts({
+    meta_enter: {
+        handler: buttonClickHandler
+    }
+})
 </script>

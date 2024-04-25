@@ -36,12 +36,15 @@
                     </UTooltip>
                 </template>
             </USelectMenu>
-            <UButton
-                label="保存"
-                class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-200/30 dark:hover:bg-gray-200/20 transition-colors py-1 text-black dark:text-gray-100"
-                @click="showSaveModal=true"
-                >
-            </UButton>
+            <UTooltip text="保存场景" :shortcuts="['⌘', 'S']">
+                <UButton
+                    label="保存"
+                    class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-200/30 dark:hover:bg-gray-200/20 transition-colors py-1 text-black dark:text-gray-100"
+                    @click="showSaveModal=true"
+
+                    >
+                </UButton>
+            </UTooltip>
             <UModal v-model="showSaveModal" :ui="{rounded: 'rounded-2xl'}">
                 <PresetSaveModal :currentPreset="currentPreset" @save-preset="addPreset" @update-preset="updatePreset" @close-modal="showSaveModal=false"/>
             </UModal>
@@ -52,7 +55,7 @@
                     <IconThreeDot size="24"/>
                 </UButton>
             </UDropdown>
-            <UModal v-model="isShowModal" :ui="{rounded: 'rounded-2xl', base: 'sm:max-w-[650px]'}">
+            <UModal v-model="isShowModal" :ui="{rounded: 'rounded-2xl', base: 'sm:!max-w-[650px]'}">
                 <ModelSetModal @CloseModal="closeModal" :models="props.models"/>
             </UModal>
 
@@ -165,6 +168,7 @@ function updatePreset(name, desc, save_chat) {
 
 function clearPreset() {
     currentPreset.value = null
+    oldPreset.value = null
     emits('resetPreset')
 }
 
@@ -182,4 +186,14 @@ onMounted(async () => {
 watch(presets, (newVal) => {
     localStorage.setItem("presets", JSON.stringify(newVal))
 }, {deep: true})
+
+
+defineShortcuts({
+    meta_s: {
+        usingInput: true,
+        handler: () => {
+            showSaveModal.value = true
+        }
+    }
+})
 </script>
