@@ -4,6 +4,9 @@ This is a very simple playground clone. The tech stack is
 * [Nuxt.js](https://nuxt.com/)
 * [Vue3](https://v3.vuejs.org/)
 * [Tailwind CSS](https://tailwindcss.com/)
+* [Nuxtui](https://ui.nuxt.com/)
+
+![](asset/WX20240425-194625.png)
 
 ## Setup
 
@@ -15,6 +18,7 @@ This is a very simple playground clone. The tech stack is
     # pnpm
     pnpm install
     ```
+3.
 
 ## Development Server
 

@@ -13,6 +13,9 @@
                 :ui="{
                     variant: {outline: 'ring-gray-300 dark:ring-gray-600'},
                 }"
+                :uiMenu="{
+                    background: 'dark:bg-neutral-800',
+                }"
                 @change="setModelConfig"
             >
             </UInputMenu>
