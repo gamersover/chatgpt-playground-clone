@@ -3,8 +3,8 @@
         @click="emits('handleModelSelected')"
         color="black"
         variant="ghost"
-        :class="{'bg-gray-200': isSelected}"
-        class="hover:bg-gray-200 w-full"
+        :class="{'bg-gray-200 dark:bg-neutral-700': isSelected}"
+        class="hover:bg-gray-200 dark:hover:bg-neutral-700 w-full"
     >
         <div class="flex justify-between w-full relative">
             <div
@@ -14,7 +14,11 @@
                 class="overflow-hidden text-nowrap w-28 max-w-28 h-8 text-base font-normal flex items-center">
                 {{ model.showName }}
             </div>
-            <UDropdown :items="settings" :popper="{placement: 'bottom-start'}">
+            <UDropdown
+                :items="settings"
+                :popper="{placement: 'bottom-start'}"
+                :ui="{background: 'dark:bg-neutral-800'}"
+            >
                 <UButton
                     v-show="isSelected"
                     color="black"
@@ -25,6 +29,37 @@
                 </UButton>
             </UDropdown>
         </div>
+        <UModal
+            v-model="isDelete"
+            :ui="{
+                rounded: 'rounded-2xl',
+                background: 'dark:bg-neutral-800',
+                overlay: {background: 'bg-black/50 dark:bg-black/80'}
+            }"
+        >
+            <div class="flex flex-col p-4 gap-6">
+                <h1 class="text-lg font-medium">删除模型 "{{ model.showName }}"？</h1>
+                <p>该模型将被永久删除，无法恢复，确定继续吗？</p>
+                <div class="flex justify-end gap-2">
+                    <UButton
+                        label="取消"
+                        color="gray"
+                        :ui="{rounded: 'rounded-lg'}"
+                        class="text-base dark:bg-gray-300/20 dark:hover:bg-zinc-500"
+                        @click="isDelete=false"
+                    >
+                    </UButton>
+                    <UButton
+                        label="删除"
+                        color="red"
+                        :ui="{rounded: 'rounded-lg', variant: {solid: 'dark:bg-red-700 dark:hover:bg-red-600'}}"
+                        class="text-base dark:text-gray-200"
+                        @click="deleteModel"
+                    >
+                    </UButton>
+                </div>
+            </div>
+        </UModal>
     </UButton>
 </template>
 
@@ -33,6 +68,7 @@ const props = defineProps(['model', 'isSelected'])
 const emits = defineEmits(['handleModelSelected', 'removeModel'])
 
 const name = ref(null)
+const isDelete = ref(false)
 
 
 async function changeName() {
@@ -63,6 +99,7 @@ function updateName() {
 
 function deleteModel() {
     emits('removeModel')
+    isDelete.value = false
     props.model.showPopup = false
 }
 
@@ -73,15 +110,16 @@ const settings = [
             changeName()
         },
         icon: "i-heroicons-pencil-square",
-        class: "text-base"
+        class: "text-base dark:text-gray-200",
+        iconClass: "dark:text-gray-200"
     },{
         label: "删除",
         click: () => {
-            deleteModel()
+            isDelete.value = true
         },
         icon: "i-heroicons-trash",
-        class: "text-red-500 text-base",
-        iconClass: "text-red-500"
+        class: "text-red-500 dark:text-red-500 text-base",
+        iconClass: "text-red-500 dark:text-red-500"
     }]
 ]
 </script>

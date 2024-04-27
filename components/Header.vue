@@ -6,11 +6,12 @@
                 color="blue"
                 :ui="{
                     base: 'w-44',
-                    variant: {outline: 'ring-gray-300'},
+                    variant: {outline: 'ring-gray-300 dark:ring-gray-600'},
                     icon: { trailing: { pointer: '' } }
                 }",
                 :uiMenu="{
-                    option: {container: 'w-full'}
+                    option: {container: 'w-full', active: 'bg-blue-200'},
+                    background: 'dark:bg-neutral-800'
                 }"
                 placeholder="未选择预设场景"
                 :options="presets"
@@ -31,35 +32,87 @@
                     <UIcon name="i-heroicons-chevron-up-down-20-solid"/>
                 </template>
                 <template #option="{option: preset}">
-                    <UTooltip :text="preset.desc === '' ? preset.label : preset.desc" :popper="{arrow: true}" :ui="{wrapper: 'w-full'}">
+                    <UTooltip
+                        :text="preset.desc === '' ? preset.label : preset.desc"
+                        :popper="{arrow: true}"
+                        :ui="{wrapper: 'w-full'}"
+                    >
                         <span class="w-full">{{ preset.label }}</span>
                     </UTooltip>
                 </template>
             </USelectMenu>
-            <UTooltip text="保存场景" :shortcuts="['⌘', 'S']">
+            <UTooltip :ui="{base: 'px-1.5 py-1 h-full rounded-md', background: 'bg-neutral-800 dark:bg-neutral-800'}">
+                <template #text>
+                    <div class="flex gap-1 items-center text-sm justify-between">
+                        <span class="text-white">保存场景</span>
+                        <div class="flex items-center">
+                            <UKbd :ui="{base: 'text-white dark:text-black', background: 'bg-neutral-600 dark:bg-gray-300'}">{{ metaSymbol }}</UKbd>
+                            <UKbd :ui="{base: 'text-white dark:text-black', background: 'bg-neutral-600 dark:bg-gray-300'}">S</UKbd>
+                        </div>
+                    </div>
+                </template>
                 <UButton
                     label="保存"
-                    class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-200/30 dark:hover:bg-gray-200/20 transition-colors py-1 text-black dark:text-gray-100"
+                    class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
                     @click="showSaveModal=true"
 
                     >
                 </UButton>
             </UTooltip>
-            <UModal v-model="showSaveModal" :ui="{rounded: 'rounded-2xl'}">
-                <PresetSaveModal :currentPreset="currentPreset" @save-preset="addPreset" @update-preset="updatePreset" @close-modal="showSaveModal=false"/>
-            </UModal>
-            <UDropdown :items="currentPreset ? settings : [settings[1]]" :popper="{ placement: 'bottom-start' }">
+            <UButton
+                label="设置"
+                class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
+                @click="isShowModal=true"
+            >
+            </UButton>
+            <UPopover
+                :popper="{ placement: 'bottom-start' }"
+                :ui="{background: 'dark:bg-neutral-800'}"
+            >
+                <template #panel>
+                    <div v-if="currentPreset" class="w-full">
+                        <UButton
+                            label="删除场景"
+                            variant=""
+                            @click="showDeletePresetModal = true"
+                            class="py-2 w-full rounded-none text-red-500 dark:text-red-500 text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
+                        ></UButton>
+                        <UDivider
+                            :ui="{'border': {'base':  'dark:border-gray-700'}}">
+                        </UDivider>
+                    </div>
+                    <div class="flex w-[190px] px-2 py-1 justify-between items-center">
+                        <div class="text-sm">主题</div>
+                        <ThemeSwitch />
+                    </div>
+                </template>
                 <UButton
-                    class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-200/30 dark:hover:bg-gray-200/20 transition-colors py-1 text-black dark:text-gray-100"
+                    class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
                 >
                     <IconThreeDot size="24"/>
                 </UButton>
-            </UDropdown>
-            <UModal v-model="isShowModal" :ui="{rounded: 'rounded-2xl', base: 'sm:!max-w-[650px]'}">
+            </UPopover>
+            <UModal prevent-close v-model="showSaveModal" :ui="{
+                rounded: 'rounded-2xl',
+                background: 'dark:bg-neutral-800',
+                overlay: {background: 'bg-black/50 dark:bg-black/80'}}"
+            >
+                <PresetSaveModal :currentPreset="currentPreset" @save-preset="addPreset" @update-preset="updatePreset" @close-modal="showSaveModal=false"/>
+            </UModal>
+            <UModal prevent-close v-model="isShowModal" :ui="{
+                rounded: 'rounded-2xl',
+                base: 'sm:!max-w-[650px]',
+                background: 'dark:bg-neutral-800',
+                overlay: {background: 'bg-black/50 dark:bg-black/80'}}"
+            >
                 <ModelSetModal @CloseModal="closeModal" :models="props.models"/>
             </UModal>
 
-            <UModal v-model="showDeletePresetModal" :ui="{rounded: 'rounded-2xl'}">
+            <UModal v-model="showDeletePresetModal" :ui="{
+                rounded: 'rounded-2xl',
+                background: 'dark:bg-neutral-800',
+                overlay: {background: 'bg-black/50 dark:bg-black/80'}}"
+            >
                 <DeletePresetModal :preset-name="currentPreset?.label" @DeletePreset="deletePreset" @CloseModal="showDeletePresetModal=false"/>
             </UModal>
         </div>
@@ -69,6 +122,7 @@
 
 <script setup>
 const toast = useToast()
+const { metaSymbol } = useShortcuts()
 
 const props = defineProps(['models', 'prompt', 'messages'])
 const emits = defineEmits(['loadPreset', 'resetPreset'])
@@ -79,23 +133,6 @@ const oldPreset = ref(null)
 const showDeletePresetModal = ref(false)
 
 const presets = ref([])
-
-const settings = ref([
-    [{
-        label: "删除场景",
-        class: 'text-red-500 text-sm',
-        click: () => {
-            showDeletePresetModal.value = true
-        },
-        disabled: computed(() => currentPreset.value === null)
-    }],[{
-        label: "模型设置",
-        click: () => {
-            isShowModal.value=true
-        },
-        class: "text-sm"
-    }]
-])
 
 watch(currentPreset, (newVal, oldVal) => {
     console.log(newVal, oldVal, oldPreset.value)

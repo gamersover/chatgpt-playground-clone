@@ -11,7 +11,7 @@
                 color="blue"
                 size="lg"
                 :ui="{
-                    'variant': {'outline': 'ring-gray-300'},
+                    variant: {outline: 'ring-gray-300 dark:ring-gray-600'},
                 }"
                 @change="setModelConfig"
             >
@@ -71,20 +71,26 @@
             >
             </URange>
         </div>
-        <div>
+        <div class="flex flex-col gap-3">
             <p>Stop</p>
-            <div class="flex h-auto min-h-10 w-full p-2 mt-2 rounded-md border-2 hover:border-blue-500">
-                <div class="flex flex-wrap w-full gap-1 text-sm">
-                    <Chip v-for="(stopword, index) of config.stop" :key="index" :stopword="stopword" @click="removeStopWord(index)"></Chip>
+            <!--div组件怎么做到加边框不位移的，怎么做到focus的-->
+            <div class="flex flex-wrap gap-1 text-sm h-auto min-h-10 w-full p-2 rounded-md ring-1 ring-gray-300 focus-within:ring-2 dark:ring-gray-600 hover:ring-gray-400 dark:hover:ring-gray-500">
+                    <Chip
+                        v-for="(stopword, index) of config.stop"
+                        :key="index"
+                        :stopword="stopword"
+                        @click="removeStopWord(index)"
+                    >
+                    </Chip>
                     <UInput
                         v-model.trim="stop_word"
                         @blur="addStopWord"
-                        :ui="{'base': 'max-w-fit h-full'}"
+                        :ui="{base: 'max-w-fit min-w-5 h-full'}"
                         variant="none"
                         :padded="false"
+                        autosize
                     >
                     </UInput>
-                </div>
             </div>
         </div>
     </div>

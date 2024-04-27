@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col h-screen dark:bg-[#202123]">
+    <div class="flex flex-col h-screen dark:bg-[#202123] dark:text-gray-200">
         <Header
             :models="models"
             :prompt="system_prompt"

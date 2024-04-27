@@ -10,7 +10,7 @@
 		<UInput
 		  v-model="preset_name"
 		  size="xl"
-		  :ui="{'rounded': 'rounded-lg', 'variant': {'outline': 'ring-gray-300'}, 'padding': 'py-0.5'}"
+		  :ui="{'rounded': 'rounded-lg', 'variant': {'outline': 'ring-gray-300 hover:ring-gray-400 dark:ring-gray-600 dark:hover:ring-gray-500'}, 'padding': 'py-0.5'}"
 		  color="blue"
 		>
 		</UInput>
@@ -18,12 +18,14 @@
 	  <div class="flex flex-col gap-2">
 		<div class="flex gap-2">
 		  <p class="font-medium">描述</p>
-		  <p class="font-light">可选</p>
+		  <p class="font-thin">可选</p>
 		</div>
 		<UInput
 		  v-model="preset_desc"
 		  size="xl"
-		  :ui="{'rounded': 'rounded-lg', 'variant': {'outline': 'ring-gray-300'}, 'padding': 'py-0.5'}"
+		  :ui="{
+			rounded: 'rounded-lg',
+			variant: {outline: 'ring-gray-300 hover:ring-gray-400 dark:ring-gray-600 dark:hover:ring-gray-500'}, 'padding': 'py-0.5'}"
 		  color="blue"
 		>
 		</UInput>
@@ -33,6 +35,10 @@
 		  label="保存对话历史"
 		  v-model="save_chat"
 		  color="blue"
+		  :ui="{
+			inactive: 'dark:bg-gray-400/70',
+			container: {base: 'dark:bg-white'}
+		  }"
 		>
 		</UToggle>
 		<p class="font-medium">保存对话历史</p>
@@ -42,7 +48,7 @@
 	  <UButton
 		label="取消"
 		color="gray"
-		:ui="{'rounded': 'rounded-lg'}"
+		:ui="{rounded: 'rounded-lg', color: {gray: {solid: 'dark:bg-gray-300/20 dark:hover:bg-zinc-500'}}}"
 		class="text-base"
 		@click="emits('closeModal')"
 	  >
@@ -51,8 +57,13 @@
 		:label="props.currentPreset ? '另存为' : '保存'"
 		:disabled="!isSaveEnable"
 		:color="props.currentPreset ? 'gray' : 'blue'"
-		:ui="{'rounded': 'rounded-lg'}"
-		class="text-base"
+		:ui="{
+			rounded: 'rounded-lg',
+			color: {gray: {solid: 'dark:bg-gray-300/20 dark:hover:bg-zinc-500'}},
+	    	variant: {solid: 'dark:bg-blue-800 dark:hover:bg-blue-800/80'}
+		}"
+		class="text-base dark:text-gray-200"
+		:class="{'disabled:bg-blue-600/50 dark:disabled:bg-blue-700/30': !isSaveEnable}"
 		@click="savePreset"
 	  >
 	  </UButton>
