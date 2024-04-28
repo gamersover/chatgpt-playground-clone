@@ -37,10 +37,10 @@
 	</div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 const colorMode = useColorMode()
 
-function setTheme(theme) {
+function setTheme(theme: string) {
 	colorMode.preference = theme
 }
 </script>

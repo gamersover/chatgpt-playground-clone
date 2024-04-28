@@ -22,10 +22,7 @@
                 color="black"
             >
             </UButton>
-            <ul class="flex flex-col max-h-[300px] overflow-y-scroll w-[220px]">
-                <li>
-
-                </li>
+            <ul class="flex flex-col max-h-[300px] overflow-y-auto w-[200px]">
                 <li v-for="(model, index) in models" :key="index">
                     <ModelListItem :isSelected="currentModel===index" @HandleModelSelected="handleModelSelected(index)" @RemoveModel="removeModel" :model="model"/>
                 </li>

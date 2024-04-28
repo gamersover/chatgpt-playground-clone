@@ -25,11 +25,13 @@
                 <p>Temperature</p>
                 <UInput
                     v-model="config.temperature"
-                    color="blue"
+                    variant="solid"
                     :ui="{
                         'base': 'w-16 !py-0.5 !px-1 text-right',
                         'rounded': 'rounded-md',
-                        'variant': {'outline': 'ring-0 shadow-none group-hover:ring-1 hover:ring-gray-300'},
+                        'variant': {
+                            solid: 'bg-transparent focus:!ring-blue-500 focus:!ring-2 dark:focus:!ring-blue-400 shadow-none group-hover:ring-1 group-hover:ring-gray-300 dark:group-hover:ring-gray-600'
+                        },
                     }"
                     placeholder="1"
                     @blur="changeTemperature"
@@ -52,11 +54,13 @@
                 <p>Max Tokens</p>
                 <UInput
                     v-model="config.max_tokens"
-                    color="blue"
+                    variant="solid"
                     :ui="{
                         'base': 'w-16 !py-0.5 !px-1 text-right',
                         'rounded': 'rounded-md',
-                        'variant': {'outline': 'ring-0 shadow-none group-hover:ring-1 hover:ring-gray-300'},
+                        'variant': {
+                            solid: 'bg-transparent focus:!ring-blue-500 dark:focus:!ring-blue-400 focus:!ring-2 shadow-none group-hover:ring-1 group-hover:ring-gray-300 dark:group-hover:ring-gray-600'
+                        },
                     }"
                     placeholder="2048"
                     @blur="changeMaxTokens"
@@ -77,7 +81,7 @@
         <div class="flex flex-col gap-3">
             <p>Stop</p>
             <!--div组件怎么做到加边框不位移的，怎么做到focus的-->
-            <div class="flex flex-wrap gap-1 text-sm h-auto min-h-10 w-full p-2 rounded-md ring-1 ring-gray-300 focus-within:ring-2 dark:ring-gray-600 hover:ring-gray-400 dark:hover:ring-gray-500">
+            <div class="flex flex-wrap gap-1 text-sm h-auto min-h-10 w-full p-2 rounded-md ring-1 ring-gray-300 focus-within:ring-2 focus-within:!ring-blue-500 dark:focus-within:!ring-blue-400 dark:ring-gray-600 hover:ring-gray-400 dark:hover:ring-gray-500">
                     <Chip
                         v-for="(stopword, index) of config.stop"
                         :key="index"

@@ -24,9 +24,9 @@
                 :ui="{base: 'px-1.5 py-1 h-full rounded-md', background: 'bg-neutral-800 dark:bg-neutral-800'}"
             >
                 <template #text>
-                    <div class="flex gap-1 items-center text-sm justify-between">
+                    <div class="flex gap-3 items-center text-sm justify-between">
                         <span class="text-white">{{ submit.is_submit ? '取消' : '提交' }}</span>
-                        <div class="flex items-center">
+                        <div class="flex items-center gap-1">
                             <UKbd :ui="{base: 'text-white dark:text-black', background: 'bg-neutral-600 dark:bg-gray-300'}">{{ metaSymbol }}</UKbd>
                             <UKbd :ui="{base: 'text-white dark:text-black', background: 'bg-neutral-600 dark:bg-gray-300'}">Enter</UKbd>
                         </div>

@@ -43,9 +43,9 @@
             </USelectMenu>
             <UTooltip :ui="{base: 'px-1.5 py-1 h-full rounded-md', background: 'bg-neutral-800 dark:bg-neutral-800'}">
                 <template #text>
-                    <div class="flex gap-1 items-center text-sm justify-between">
+                    <div class="flex gap-3 items-center text-sm justify-between">
                         <span class="text-white">保存场景</span>
-                        <div class="flex items-center">
+                        <div class="flex items-center gap-1">
                             <UKbd :ui="{base: 'text-white dark:text-black', background: 'bg-neutral-600 dark:bg-gray-300'}">{{ metaSymbol }}</UKbd>
                             <UKbd :ui="{base: 'text-white dark:text-black', background: 'bg-neutral-600 dark:bg-gray-300'}">S</UKbd>
                         </div>
@@ -55,8 +55,7 @@
                     label="保存"
                     class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
                     @click="showSaveModal=true"
-
-                    >
+                >
                 </UButton>
             </UTooltip>
             <UButton
