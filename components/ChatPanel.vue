@@ -89,7 +89,6 @@ async function autoExpand() {
     await nextTick()
     if (container.value) {
         const diff = container.value.scrollHeight - container.value.scrollTop -  container.value.clientHeight
-        console.log(diff)
         if (diff < 70) {
             container.value.scrollTop = container.value.scrollHeight
         }

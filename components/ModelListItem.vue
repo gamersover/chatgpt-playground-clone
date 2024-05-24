@@ -11,6 +11,7 @@
                 ref="name" :contenteditable="model.editable"
                 @blur="updateName"
                 @dblclick="changeName"
+                :class="{'dark:bg-neutral-800 bg-white': model.editable}"
                 class="overflow-hidden text-nowrap w-28 max-w-28 h-8 text-base font-normal flex items-center">
                 {{ model.showName }}
             </div>

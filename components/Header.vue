@@ -91,7 +91,7 @@
                     <IconThreeDot size="24"/>
                 </UButton>
             </UPopover>
-            <UModal prevent-close v-model="showSaveModal" :ui="{
+            <UModal v-model="showSaveModal" :ui="{
                 rounded: 'rounded-2xl',
                 background: 'dark:bg-neutral-800',
                 overlay: {background: 'bg-black/50 dark:bg-black/80'}}"
@@ -120,6 +120,7 @@
 
 
 <script setup>
+import { v4 as uuidv4 } from 'uuid'
 const toast = useToast()
 const { metaSymbol } = useShortcuts()
 
@@ -134,7 +135,6 @@ const showDeletePresetModal = ref(false)
 const presets = ref([])
 
 watch(currentPreset, (newVal, oldVal) => {
-    console.log(newVal, oldVal, oldPreset.value)
     if (newVal !== oldPreset.value) {
         oldPreset.value = oldVal
         currentPreset.value = newVal
@@ -170,7 +170,7 @@ function closeModal() {
 
 function addPreset(name, desc, save_chat) {
     const preset = {
-        id: presets.value.length+1,
+        id: uuidv4(),
         label: name,
         desc: desc,
         system: props.prompt.content,
@@ -185,6 +185,7 @@ function addPreset(name, desc, save_chat) {
         icon: 'i-heroicons-check-circle-20-solid',
         color: 'green',
     })
+    currentPreset.value = preset
 }
 
 function updatePreset(name, desc, save_chat) {
