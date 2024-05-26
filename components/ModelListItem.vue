@@ -5,14 +5,15 @@
         variant="ghost"
         :class="{'bg-gray-200 dark:bg-neutral-700': isSelected}"
         class="hover:bg-gray-200 dark:hover:bg-neutral-700 w-full"
+        :padded="false"
     >
-        <div class="flex justify-between w-full relative">
+        <div class="flex justify-between w-full relative px-1">
             <div
                 ref="name" :contenteditable="model.editable"
                 @blur="updateName"
                 @dblclick="changeName"
                 :class="{'dark:bg-neutral-800 bg-white': model.editable}"
-                class="overflow-hidden text-nowrap w-28 max-w-28 h-8 text-base font-normal flex items-center">
+                class="overflow-hidden rounded-lg text-nowrap px-1 w-4/5 h-10 text-base font-normal flex items-center focus:border">
                 {{ model.showName }}
             </div>
             <UDropdown
