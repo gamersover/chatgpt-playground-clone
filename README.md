@@ -45,3 +45,11 @@ Locally preview production build:
 pnpm run preview
 
 ```
+
+# TODO:
+* 数据改成indexDB存储
+* 另存为场景如果用户没有该名称，则将名称后面添加（copy）
+* 第一次如果聊天超过页面长度，无法自动滚动到底部
+* console.log 去掉
+* variant=""不行，有警告
+* 模型添加后，跳转到模型，并focus，或者新添加的模型永远在前面

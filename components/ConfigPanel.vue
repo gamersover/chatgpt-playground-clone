@@ -1,25 +1,5 @@
 <template>
-    <div class="flex flex-col w-64 gap-5 text-sm font-light h-full p-2 mr-2">
-        <div class="flex flex-col gap-3">
-            <p>Model</p>
-            <UInputMenu
-                v-model="selectedModel"
-                :options="models"
-                by="id"
-                option-attribute="showName"
-                trailing-icon="i-heroicons-chevron-up-down-20-solid"
-                color="blue"
-                size="lg"
-                :ui="{
-                    variant: {outline: 'ring-gray-300 dark:ring-gray-600'},
-                }"
-                :uiMenu="{
-                    background: 'dark:bg-neutral-800',
-                }"
-                @change="setModelConfig"
-            >
-            </UInputMenu>
-        </div>
+    <div class="flex flex-col p-4 w-64 gap-5 text-sm font-light h-full">
         <div class="flex flex-col gap-3">
             <div class="flex justify-between group">
                 <p>Temperature</p>
@@ -100,22 +80,100 @@
                     </UInput>
             </div>
         </div>
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between group">
+                <p>Top p</p>
+                <UInput
+                    v-model="config.top_p"
+                    variant="solid"
+                    :ui="{
+                        'base': 'w-16 !py-0.5 !px-1 text-right',
+                        'rounded': 'rounded-md',
+                        'variant': {
+                            solid: 'bg-transparent focus:!ring-blue-500 focus:!ring-2 dark:focus:!ring-blue-400 shadow-none group-hover:ring-1 group-hover:ring-gray-300 dark:group-hover:ring-gray-600'
+                        },
+                    }"
+                    placeholder="1"
+                    @blur="changeTopP"
+                    :padded="false"
+                >
+                </UInput>
+            </div>
+            <URange
+                v-model="config.top_p"
+                :min="0"
+                :max="1"
+                :step="0.01"
+                color="blue"
+                size="sm"
+            >
+            </URange>
+        </div>
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between group">
+                <p>Frequency penalty</p>
+                <UInput
+                    v-model="config.frequency_penalty"
+                    variant="solid"
+                    :ui="{
+                        'base': 'w-16 !py-0.5 !px-1 text-right',
+                        'rounded': 'rounded-md',
+                        'variant': {
+                            solid: 'bg-transparent focus:!ring-blue-500 focus:!ring-2 dark:focus:!ring-blue-400 shadow-none group-hover:ring-1 group-hover:ring-gray-300 dark:group-hover:ring-gray-600'
+                        },
+                    }"
+                    placeholder="1"
+                    @blur="changeFrequencyPenalty"
+                    :padded="false"
+                >
+                </UInput>
+            </div>
+            <URange
+                v-model="config.frequency_penalty"
+                :min="0"
+                :max="1"
+                :step="0.01"
+                color="blue"
+                size="sm"
+            >
+            </URange>
+        </div>
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between group">
+                <p>Presence penalty</p>
+                <UInput
+                    v-model="config.presence_penalty"
+                    variant="solid"
+                    :ui="{
+                        'base': 'w-16 !py-0.5 !px-1 text-right',
+                        'rounded': 'rounded-md',
+                        'variant': {
+                            solid: 'bg-transparent focus:!ring-blue-500 focus:!ring-2 dark:focus:!ring-blue-400 shadow-none group-hover:ring-1 group-hover:ring-gray-300 dark:group-hover:ring-gray-600'
+                        },
+                    }"
+                    placeholder="1"
+                    @blur="changePresencePenalty"
+                    :padded="false"
+                >
+                </UInput>
+            </div>
+            <URange
+                v-model="config.presence_penalty"
+                :min="0"
+                :max="1"
+                :step="0.01"
+                color="blue"
+                size="sm"
+            >
+            </URange>
+        </div>
     </div>
 </template>
 
 
 <script setup>
-const props = defineProps(['config', 'models'])
+const props = defineProps(['config'])
 const stop_word = ref('')
-const selectedModel = ref(null)
-
-function setModelConfig() {
-    if (selectedModel.value) {
-        props.config.model = selectedModel.value.modelName
-        props.config.url = selectedModel.value.baseURL
-        props.config.sk = selectedModel.value.apiKey
-    }
-}
 
 function changeTemperature(e) {
     const v = parseFloat(e.target.value)
@@ -159,11 +217,48 @@ function removeStopWord(index) {
     props.config.stop.splice(index, 1)
 }
 
-watch(() => props.models, (newVal) => {
-    if (selectedModel.value && !newVal.includes(selectedModel.value)) {
-        selectedModel.value = null
-    } else if (!selectedModel.value && newVal.length > 0) {
-        selectedModel.value = newVal[0]
+function changeTopP(e) {
+    const v = parseFloat(e.target.value)
+    if (!isNaN(v)) {
+        if (v < 0) {
+            props.config.top_p = 0
+        } else if (v > 1) {
+            props.config.top_p = 1
+        } else {
+            props.config.top_p = v
+        }
+    } else {
+        props.config.top_p = 1
     }
-}, {deep: true})
+}
+
+function changeFrequencyPenalty(e) {
+    const v = parseFloat(e.target.value)
+    if (!isNaN(v)) {
+        if (v < 0) {
+            props.config.frequency_penalty = 0
+        } else if (v > 1) {
+            props.config.frequency_penalty = 1
+        } else {
+            props.config.frequency_penalty = v
+        }
+    } else {
+        props.config.frequency_penalty = 1
+    }
+}
+
+function changePresencePenalty(e) {
+    const v = parseFloat(e.target.value)
+    if (!isNaN(v)) {
+        if (v < 0) {
+            props.config.presence_penalty = 0
+        } else if (v > 1) {
+            props.config.presence_penalty = 1
+        } else {
+            props.config.presence_penalty = v
+        }
+    } else {
+        props.config.presence_penalty = 1
+    }
+}
 </script>
