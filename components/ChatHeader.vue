@@ -17,7 +17,7 @@
       @change="setModelConfig"
     >
     </UInputMenu>
-    <div class="flex gap-2">
+    <div class="flex gap-2 items-center">
       <UButton
         variant="ghost"
         color="black"
@@ -33,25 +33,53 @@
         color="black"
         class="hover:bg-gray-200 hover:dark:bg-[#353740]"
         label="Compare"
+        v-if="!isCompared"
+        @click="$emit('handleCompareClicked')"
       >
         <template #trailing>
           <IconCompare />
         </template>
+      </UButton>
+      <UPopover v-if="isCompared" :ui="{ background: 'dark:bg-neutral-800' }">
+        <UButton
+          variant="ghost"
+          color="black"
+          class="hover:bg-gray-200 hover:dark:bg-[#353740]"
+          label="Settings"
+        >
+          <IconSetting />
+        </UButton>
+        <template #panel>
+          <div class="p-0">
+            <ConfigPanel :config="config" />
+          </div>
+        </template>
+      </UPopover>
+      <UButton
+        variant="ghost"
+        color="black"
+        class="hover:bg-gray-200 hover:dark:bg-[#353740]"
+        v-if="isCompared"
+        @click="$emit('handleClose')"
+      >
+        <IconClose size="18px" />
       </UButton>
     </div>
   </div>
 </template>
 
 <script setup>
-const props = defineProps(["config", "models"]);
-const emits = defineEmits(["clearMessages"]);
-const selectedModel = ref(null);
+const props = defineProps(["config", "models", "isCompared"]);
+const emits = defineEmits([
+  "clearMessages",
+  "handleCompareClicked",
+  "handleClose",
+]);
+const selectedModel = ref(props.config.model);
 
 function setModelConfig() {
   if (selectedModel.value) {
-    props.config.model = selectedModel.value.modelName;
-    props.config.url = selectedModel.value.baseURL;
-    props.config.sk = selectedModel.value.apiKey;
+    props.config.model = selectedModel.value;
   }
 }
 

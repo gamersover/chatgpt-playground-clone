@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
+    console.log(body)
     try {
         const response = await fetch(body.url + "/chat/completions", {
             method: 'POST',
@@ -13,7 +14,10 @@ export default defineEventHandler(async (event) => {
                 temperature: body.temperature,
                 max_tokens: body.max_tokens,
                 stop: body.stop,
-                stream: body.stream
+                stream: body.stream,
+                top_p: body.top_p,
+                frequency_penalty: body.frequency_penalty,
+                presence_penalty: body.presence_penalty
             })
         })
         return sendStream(event, response.body)

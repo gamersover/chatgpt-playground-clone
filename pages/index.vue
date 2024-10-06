@@ -2,23 +2,20 @@
   <div class="flex flex-col h-screen dark:bg-[#202123] dark:text-gray-200">
     <Header
       :models="models"
-      :prompt="system_prompt"
-      :messages="messages"
+      :isCompared="isCompared"
+      :context="chatContext[0]"
       @load-preset="loadPreset"
       @reset-preset="resetPreset"
     />
     <UDivider :ui="{ border: { base: 'dark:border-black' } }" />
-    <div class="flex-1 overflow-scroll flex justify-center items-start">
-      <ChatPanel
-        :config="config"
-        :models="models"
-        :system_prompt="system_prompt"
-        :messages="messages"
-        :submit="submit"
-        @submit-chat="submitChat"
-      />
-      <ConfigPanel :config="config" />
-    </div>
+    <ChatPanel
+      :models="models"
+      :chatContext="chatContext"
+      :submit="submit"
+      :isCompared="isCompared"
+      @toggle-compare="toggleCompared"
+      @submit-chat="submitAll"
+    />
     <UNotifications />
   </div>
 </template>
@@ -28,42 +25,50 @@ import { v4 as uuidv4 } from "uuid";
 
 const toast = useToast();
 
-const system_prompt = ref({ content: "" });
-const models = ref([]);
-const config = ref({
-  model: null,
-  url: null,
-  sk: "",
-  temperature: 1,
-  max_tokens: 256,
-  stop: [],
-  top_p: 1,
-  frequency_penalty: 0,
-  presence_penalty: 0,
-});
+const chatContext = ref([
+  {
+    system_prompt: "",
+    messages: [],
+    config: {
+      model: null,
+      temperature: 1,
+      max_tokens: 256,
+      stop: [],
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    },
+  },
+]);
+const isCompared = ref(false);
 
-const messages = ref([]);
+const models = ref([]);
+
+function toggleCompared() {
+  isCompared.value = !isCompared.value;
+}
 
 const submit = ref({
   is_submit: false,
   stop_generate: false,
   isAvaiable: computed(
-    () => config.value.url !== null && config.value.model !== null
+    () => models.value.length > 0 && chatContext.value.every(c => c.messages.length > 0)
   ),
 });
 
-function setModelConfig(index) {
-  config.value.model = models.value[index].modelName;
-  config.value.url = models.value[index].baseURL;
-  config.value.sk = models.value[index].apiKey;
+function setModelConfig(chat_index, model_index) {
+  let context = chatContext.value[chat_index];
+  context.config.model = models.value[model_index];
 }
 
 function loadPreset(preset) {
-  system_prompt.value.content = preset.system;
-  if (preset.messages) {
-    messages.value = preset.messages;
-  } else {
-    messages.value = [{ role: "user", content: "", id: uuidv4() }];
+  for (const context of chatContext.value) {
+    context.system_prompt.content = preset.system;
+    if (preset.messages) {
+      context.messages = preset.messages;
+    } else {
+      context.messages = [{ role: "user", content: "", id: uuidv4() }];
+    }
   }
   toast.add({
     title: "成功",
@@ -74,8 +79,10 @@ function loadPreset(preset) {
 }
 
 function resetPreset() {
-  system_prompt.value.content = "";
-  messages.value = [{ role: "user", content: "", id: uuidv4() }];
+  for (const context of chatContext.value) {
+    context.system_prompt = "";
+    context.messages = [{ role: "user", content: "", id: uuidv4() }];
+  }
   toast.add({
     title: "成功",
     description: "场景已重置",
@@ -88,7 +95,9 @@ onMounted(() => {
   if (localStorage.getItem("models")) {
     models.value = JSON.parse(localStorage.getItem("models"));
     if (models.value.length > 0) {
-      setModelConfig(0);
+      for (let index = 0; index < models.value.length; index++) {
+        setModelConfig(index, 0);
+      }
     }
   }
 });
@@ -97,18 +106,20 @@ watch(
   models,
   (newVal) => {
     if (newVal.length === 1) {
-      setModelConfig(0);
+      for (let index = 0; index < models.value.length; index++) {
+        setModelConfig(index, 0);
+      }
     } else if (newVal.length === 0) {
-      config.value.model = null;
-      config.value.url = null;
-      config.value.sk = "";
+      for (const context of chatContext.value) {
+        context.config.model = null;
+      }
     }
     localStorage.setItem("models", JSON.stringify(newVal));
   },
   { deep: true }
 );
 
-async function submitChat() {
+async function submitChat(context) {
   try {
     submit.value.is_submit = true;
     const response = await fetch("/api/openai", {
@@ -117,10 +128,17 @@ async function submitChat() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ...config.value,
+        model: context.config.model.modelName,
+        url: context.config.model.baseURL,
+        temperature: context.config.temperature,
+        max_tokens: context.config.max_tokens,
+        stop: context.config.stop,
+        top_p: context.config.top_p,
+        frequency_penalty: context.config.frequency_penalty,
+        presence_penalty: context.config.presence_penalty,
         messages: [
-          { role: "system", content: system_prompt.value.content },
-          ...messages.value.map(({ role, content }) => ({
+          { role: "system", content: context.system_prompt },
+          ...context.messages.map(({ role, content }) => ({
             role: role,
             content: content,
           })),
@@ -154,14 +172,15 @@ async function submitChat() {
 
         if (nextRole === null) {
           nextRole = role;
-          messages.value.push({
+          context.messages.push({
             role: role,
             content: content || "",
             is_focus: false,
             id: uuidv4(),
           });
         } else {
-          messages.value[messages.value.length - 1].content += content || "";
+          context.messages[context.messages.length - 1].content +=
+            content || "";
         }
       }
     }
@@ -171,6 +190,13 @@ async function submitChat() {
   } finally {
     submit.value.is_submit = false;
     submit.value.stop_generate = false;
+  }
+}
+
+async function submitAll() {
+  console.log(chatContext.value);
+  for (const context of chatContext.value) {
+    await submitChat(context);
   }
 }
 </script>

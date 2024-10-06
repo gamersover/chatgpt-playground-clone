@@ -1,31 +1,57 @@
 <template>
-  <div
-    class="flex flex-col h-full border-r-[1px] overflow-y-scroll flex-1"
-    ref="container"
-  >
-    <ChatHeader
-      :config="config"
-      :models="models"
-      @clear-messages="clearMessages"
-    />
-    <div class="flex flex-col gap-2 items-center h-[80%] overflow-auto">
-      <SystemPanel :systemPrompt="system_prompt" @change-input="changeInput" />
-      <Message
-        v-for="(message, index) of messages"
-        @change-role="changeRole(message)"
-        @remove-role="removeMessage(index)"
-        :message="message"
-        :key="message.id"
-      />
+  <div class="flex-1 flex min-h-0">
+    <div class="flex-1 h-full flex flex-col gap-4 justify-center">
+      <div
+        class="flex justify-center flex-1 min-h-0"
+        :class="{ 'border-b-[1px] dark:border-black': isCompared }"
+      >
+        <div
+          class="flex flex-col w-full h-full min-h-0"
+          :class="{ 'border-r-[1px] dark:border-black': isCompared }"
+          v-for="context of chatContext"
+        >
+          <ChatHeader
+            :config="context.config"
+            :models="models"
+            :isCompared="isCompared"
+            @clear-messages="clearMessages(context)"
+            @handle-compare-clicked="handleCompareClicked"
+            @handle-close="handleCompareClosed(context)"
+          />
+          <div
+            class="flex flex-col flex-1 gap-2 px-4 pt-[0.5px] pb-4 items-center overflow-scroll"
+          >
+            <SystemPanel :context="context" />
+            <Message
+              v-for="(message, index) of context.messages"
+              @change-role="changeRole(message)"
+              @remove-role="removeMessage(context, index)"
+              :message="message"
+              :key="message.id"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center items-end h-auto">
+        <MessageEnter
+          :message="message"
+          :submit="submit"
+          @change-role="changeRole"
+          @add-message="addMessage"
+          @submit-chat="submitChat"
+        />
+      </div>
     </div>
-    <div class="flex justify-center">
-      <MessageEnter
-        :message="message"
-        :submit="submit"
-        @change-role="changeRole"
-        @add-message="addMessage"
-        @submit-chat="submitChat"
-      />
+    <UDivider
+      :ui="{ border: { base: 'dark:border-black' } }"
+      orientation="vertical"
+      v-show="!isCompared"
+    />
+    <div
+      class="flex justify-center overflow-scroll min-w-[260px]"
+      v-show="!isCompared"
+    >
+      <ConfigPanel :config="chatContext[0].config" />
     </div>
   </div>
 </template>
@@ -33,33 +59,38 @@
 <script setup>
 import { v4 as uuidv4 } from "uuid";
 
-const props = defineProps([
-  "messages",
-  "submit",
-  "config",
-  "models",
-  "system_prompt",
-]);
-const emits = defineEmits(["submitChat"]);
+const props = defineProps(["submit", "models", "chatContext", "isCompared"]);
+const emits = defineEmits(["submitChat", "toggleCompare"]);
 
 const container = ref(null);
 const message = ref({
   role: "user",
-  content: "",
+  content: null,
   is_focus: true,
   id: uuidv4(),
 });
 
-function changeInput(prompt) {
-  props.system_prompt.value = prompt;
+function handleCompareClicked() {
+  emits("toggleCompare");
+  const newContext = JSON.parse(JSON.stringify(props.chatContext[0]));
+  props.chatContext.push(newContext);
 }
 
-function clearMessages() {
-  props.messages.splice(0, props.messages.length);
+function handleCompareClosed(context) {
+  emits("toggleCompare");
+  props.chatContext.splice(props.chatContext.indexOf(context), 1);
+}
+
+function clearMessages(context) {
+  context.messages.splice(0, context.messages.length);
 }
 
 function addMessage(isRun = false) {
-  props.messages.push({ ...message.value });
+  if (message.value.content) {
+    for (const context of props.chatContext) {
+      context.messages.push({ ...message.value });
+    }
+  }
   let role = null;
   if (isRun) {
     role = message.value.role;
@@ -74,8 +105,8 @@ function addMessage(isRun = false) {
   };
 }
 
-function removeMessage(index) {
-  props.messages.splice(index, 1);
+function removeMessage(context, index) {
+  context.messages.splice(index, 1);
 }
 
 function changeRole(message) {
@@ -100,13 +131,13 @@ async function autoExpand() {
   }
 }
 
-watch(
-  () => props.messages,
-  () => {
-    autoExpand();
-  },
-  { deep: true, immediate: false }
-);
+// watch(
+//   () => props.messages,
+//   () => {
+//     autoExpand();
+//   },
+//   { deep: true, immediate: false }
+// );
 
 function buttonClickHandler() {
   if (props.submit.is_submit) {

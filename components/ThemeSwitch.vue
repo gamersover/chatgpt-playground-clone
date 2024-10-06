@@ -3,7 +3,8 @@
 		<UButtonGroup class="bg-gray-400/40 dark:bg-black rounded-xl px-1 py-0.5">
 			<UButton
 				icon="i-heroicons-sun"
-				variant=""
+				color="gray"
+				variant="ghost"
 				@click="setTheme('light')"
 				class="rounded-xl"
 				:class="{
@@ -14,7 +15,8 @@
 			></UButton>
 			<UButton
 				icon="i-heroicons-moon"
-				variant=""
+				color="gray"
+				variant="ghost"
 				@click="setTheme('dark')"
 				class="rounded-xl"
 				:class="{
@@ -24,7 +26,8 @@
 			></UButton>
 			<UButton
 				icon="i-heroicons-computer-desktop-20-solid"
-				variant=""
+				color="gray"
+				variant="ghost"
 				class="rounded-xl"
 				:class="{
 					'text-blue-400 dark:text-blue-600 bg-white hover:bg-white dark:hover:text-blue-600 dark:bg-gray-800': colorMode.preference === 'system',

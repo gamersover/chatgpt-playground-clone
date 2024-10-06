@@ -1,83 +1,45 @@
 <template>
-  <div
-    :style="{ height: height + 'px' }"
-    class="px-4 py-3 flex flex-col min-h-[44px] max-h-[400px] w-[800px] border-[0.5px] border-gray-100 transition-all hover:shadow-[0_1px_1px_rgba(0,0,0,.067),0_2px_5px_rgba(0,0,0,.067),0_3px_8px_rgba(0,0,0,.067)] dark:border-gray-500 rounded-md"
+  <UAccordion
+    color="gray"
+    :ui="{ wrapper: 'flex flex-col w-full', item: { color: '' } }"
+    variant="ghost"
+    size="sm"
+    class="max-w-[800px] rounded-md ring-1 ring-gray-200 dark:ring-gray-700 dark:hover:shadow-black hover:shadow-[0_1px_1px_rgba(0,0,0,.067),0_2px_5px_rgba(0,0,0,.067),0_3px_8px_rgba(0,0,0,.067)]"
+    :items="[{ label: 'System instructions', slot: 'item' }]"
   >
-    <UButton
-      variant="ghost"
-      color="gray"
-      class="w-full h-[20px] text-black hover:bg-transparent dark:text-gray-300 dark:hover:text-gray-100"
-      @click="showDetail"
-      :padded="false"
-    >
-      <template #default>
-        <div class="flex w-full h-full gap-2 justify-between">
-          <p class="font-medium text-sm">System instructions</p>
-          <p class="w-[50px] flex-1 font-light text-ellipsis overflow-hidden">{{ isShow ? "" : systemPrompt.content }}</p>
-          <!--根据isshow来判断显示什么组件-->
-          <IconTopArrow v-if="isShow"/>
-          <IconRename v-else/>
-        </div>
-      </template>
-    </UButton>
-    <div class="flex flex-1 mt-2 w-full" v-if="isShow" ref="textarea">
-      <UTextarea
-        autoresize
-        :ui="{ base: 'font-light' }"
-        :maxrows="14"
-        size="xl"
-        :padded="false"
-        placeholder="You are a helpful assistant..."
-        class="h-full w-full"
-        variant="none"
-        v-model="systemPrompt.content"
+    <template #default="{ item, index, open }">
+      <div
+        class="flex w-full h-[44px] px-4 py-2 gap-4 justify-between items-center"
       >
-      </UTextarea>
-    </div>
-  </div>
+        <p class="font-medium text-sm">{{ item.label }}</p>
+        <span
+          :class="{'text-gray-500': !open}"
+          class="flex-1 h-full font-light text-ellipsis overflow-hidden whitespace-nowrap leading-7"
+          v-if="!open"
+          >{{ context.system_prompt }}</span
+        >
+        <IconTopArrow v-if="open" />
+        <IconRename v-else />
+      </div>
+    </template>
+    <template #item>
+      <div class="px-4">
+        <UTextarea
+          autoresize
+          :ui="{ base: 'font-light' }"
+          :padded="false"
+          size="xl"
+          placeholder="You are a helpful assistant..."
+          class="w-full"
+          variant="none"
+          v-model="context.system_prompt"
+        >
+        </UTextarea>
+      </div>
+    </template>
+  </UAccordion>
 </template>
 
 <script setup>
-const props = defineProps(["systemPrompt"]);
-
-const isShow = ref(false);
-const height = ref(44);
-const textarea = ref(null);
-
-let beforeCloseHeight = null;
-
-function showDetail() {
-  isShow.value = !isShow.value;
-  if (!isShow.value) {
-    beforeCloseHeight = height.value;
-    height.value = 44;
-  }
-  else {
-    if (beforeCloseHeight === null) {
-      updateHeight();
-    } else {
-      height.value = beforeCloseHeight;
-    }
-  }
-}
-
-watch(
-  () => props.systemPrompt.content,
-  () => {
-    updateHeight();
-  },
-  { immediate: true }
-);
-
-// 监控textarea的高度，更新height
-function updateHeight() {
-  nextTick(() => {
-    if (textarea.value) {
-      const newHeight = textarea.value.offsetHeight;
-      if (newHeight > 0) {
-        height.value = 44 + newHeight;
-      }
-    }
-  });
-}
+const props = defineProps(["context"]);
 </script>
