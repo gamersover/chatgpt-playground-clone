@@ -95,7 +95,7 @@ onMounted(() => {
   if (localStorage.getItem("models")) {
     models.value = JSON.parse(localStorage.getItem("models"));
     if (models.value.length > 0) {
-      for (let index = 0; index < models.value.length; index++) {
+      for (let index = 0; index < chatContext.value.length; index++) {
         setModelConfig(index, 0);
       }
     }
@@ -106,7 +106,7 @@ watch(
   models,
   (newVal) => {
     if (newVal.length === 1) {
-      for (let index = 0; index < models.value.length; index++) {
+      for (let index = 0; index < chatContext.value.length; index++) {
         setModelConfig(index, 0);
       }
     } else if (newVal.length === 0) {
