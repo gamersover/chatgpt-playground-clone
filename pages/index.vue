@@ -194,7 +194,6 @@ async function submitChat(context) {
 }
 
 async function submitAll() {
-  console.log(chatContext.value);
   for (const context of chatContext.value) {
     await submitChat(context);
   }

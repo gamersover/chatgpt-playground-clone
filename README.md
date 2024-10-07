@@ -6,7 +6,7 @@ This is a very simple playground clone. The tech stack is
 * [Tailwind CSS](https://tailwindcss.com/)
 * [Nuxtui](https://ui.nuxt.com/)
 
-![](asset/WX20240425-194625.png)
+![](asset/index.jpg)
 
 ## Setup
 

@@ -10,26 +10,16 @@
           :class="{ 'border-r-[1px] dark:border-black': isCompared }"
           v-for="context of chatContext"
         >
-          <ChatHeader
-            :config="context.config"
+          <ChatContainer
+            :context="context"
             :models="models"
             :isCompared="isCompared"
-            @clear-messages="clearMessages(context)"
+            @clear-messages="clearMessages"
             @handle-compare-clicked="handleCompareClicked"
-            @handle-close="handleCompareClosed(context)"
+            @handle-compare-closed="handleCompareClosed"
+            @change-role="changeRole"
+            @remove-message="removeMessage"
           />
-          <div
-            class="flex flex-col flex-1 gap-2 px-4 pt-[0.5px] pb-4 items-center overflow-scroll"
-          >
-            <SystemPanel :context="context" />
-            <Message
-              v-for="(message, index) of context.messages"
-              @change-role="changeRole(message)"
-              @remove-role="removeMessage(context, index)"
-              :message="message"
-              :key="message.id"
-            />
-          </div>
         </div>
       </div>
       <div class="flex justify-center items-end h-auto">
@@ -58,11 +48,11 @@
 
 <script setup>
 import { v4 as uuidv4 } from "uuid";
+import ChatContainer from "./ChatContainer.vue";
 
 const props = defineProps(["submit", "models", "chatContext", "isCompared"]);
 const emits = defineEmits(["submitChat", "toggleCompare"]);
 
-const container = ref(null);
 const message = ref({
   role: "user",
   content: null,
@@ -117,27 +107,6 @@ function submitChat() {
   addMessage(true);
   emits("submitChat");
 }
-
-async function autoExpand() {
-  await nextTick();
-  if (container.value) {
-    const diff =
-      container.value.scrollHeight -
-      container.value.scrollTop -
-      container.value.clientHeight;
-    if (diff < 70) {
-      container.value.scrollTop = container.value.scrollHeight;
-    }
-  }
-}
-
-// watch(
-//   () => props.messages,
-//   () => {
-//     autoExpand();
-//   },
-//   { deep: true, immediate: false }
-// );
 
 function buttonClickHandler() {
   if (props.submit.is_submit) {
