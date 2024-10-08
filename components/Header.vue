@@ -216,7 +216,7 @@ function addPreset(name, desc, save_chat) {
     id: uuidv4(),
     label: name,
     desc: desc,
-    system: props.context.system_prompt.content,
+    system: props.context.system_prompt,
   };
   if (save_chat) {
     preset.messages = JSON.parse(JSON.stringify(props.context.messages));

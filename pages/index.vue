@@ -63,7 +63,7 @@ function setModelConfig(chat_index, model_index) {
 
 function loadPreset(preset) {
   for (const context of chatContext.value) {
-    context.system_prompt.content = preset.system;
+    context.system_prompt = preset.system;
     if (preset.messages) {
       context.messages = preset.messages;
     } else {
@@ -81,7 +81,7 @@ function loadPreset(preset) {
 function resetPreset() {
   for (const context of chatContext.value) {
     context.system_prompt = "";
-    context.messages = [{ role: "user", content: "", id: uuidv4() }];
+    context.messages = [];
   }
   toast.add({
     title: "成功",
