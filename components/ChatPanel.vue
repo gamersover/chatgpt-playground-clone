@@ -107,19 +107,4 @@ function submitChat() {
   addMessage(true);
   emits("submitChat");
 }
-
-function buttonClickHandler() {
-  if (props.submit.is_submit) {
-    props.submit.stop_generate = true;
-  } else {
-    emits("submitChat");
-  }
-}
-
-defineShortcuts({
-  meta_enter: {
-    usingInput: true,
-    handler: buttonClickHandler,
-  },
-});
 </script>

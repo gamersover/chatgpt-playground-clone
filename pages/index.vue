@@ -67,7 +67,7 @@ function loadPreset(preset) {
     if (preset.messages) {
       context.messages = preset.messages;
     } else {
-      context.messages = [{ role: "user", content: "", id: uuidv4() }];
+      context.messages = [];
     }
   }
   toast.add({
@@ -130,6 +130,7 @@ async function submitChat(context) {
       body: JSON.stringify({
         model: context.config.model.modelName,
         url: context.config.model.baseURL,
+        sk: context.config.model.apiKey,
         temperature: context.config.temperature,
         max_tokens: context.config.max_tokens,
         stop: context.config.stop,
@@ -166,7 +167,7 @@ async function submitChat(context) {
         const { choices } = parsedLine;
         const { delta } = choices[0];
 
-        if (delta === null) continue;
+        if (!delta) continue;
 
         const { role, content } = delta;
 
