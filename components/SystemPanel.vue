@@ -11,15 +11,18 @@
       <div
         class="flex w-full h-[44px] px-4 py-2 gap-4 justify-between items-center"
       >
-        <p class="font-medium text-sm">{{ item.label }}</p>
-        <span
-          :class="{'text-gray-500': !open}"
-          class="flex-1 h-full font-light text-ellipsis overflow-hidden whitespace-nowrap leading-7"
+        <div class="font-medium text-nowrap text-sm">{{ item.label }}</div>
+        <div
+          :class="{ 'text-gray-500': !open }"
+          class="flex-1 h-full max-w-full min-w-0 font-light text-ellipsis overflow-hidden"
           v-if="!open"
-          >{{ context.system_prompt }}</span
         >
-        <IconTopArrow v-if="open" />
-        <IconRename v-else />
+          <span>{{ context.system_prompt }}</span>
+        </div>
+        <div>
+          <IconTopArrow v-if="open" />
+          <IconRename v-else />
+        </div>
       </div>
     </template>
     <template #item>

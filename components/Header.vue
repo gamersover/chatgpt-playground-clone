@@ -111,48 +111,53 @@
           <IconThreeDot size="24" />
         </UButton>
       </UPopover>
-      <UModal
-        v-model="showSaveModal"
-        :ui="{
-          rounded: 'rounded-2xl',
-          background: 'dark:bg-neutral-800',
-          overlay: { background: 'bg-black/50 dark:bg-black/80' },
-        }"
-      >
-        <PresetSaveModal
-          :currentPreset="currentPreset"
-          @save-preset="addPreset"
-          @update-preset="updatePreset"
-          @close-modal="showSaveModal = false"
-        />
-      </UModal>
-      <UModal
-        prevent-close
-        v-model="isShowModal"
-        :ui="{
-          rounded: 'rounded-2xl',
-          base: 'sm:!max-w-[650px]',
-          background: 'dark:bg-neutral-800',
-          overlay: { background: 'bg-black/50 dark:bg-black/80' },
-        }"
-      >
-        <ModelSetModal @CloseModal="closeModal" :models="props.models" />
-      </UModal>
-
-      <UModal
-        v-model="showDeletePresetModal"
-        :ui="{
-          rounded: 'rounded-2xl',
-          background: 'dark:bg-neutral-800',
-          overlay: { background: 'bg-black/50 dark:bg-black/80' },
-        }"
-      >
-        <DeletePresetModal
-          :preset-name="currentPreset?.label"
-          @DeletePreset="deletePreset"
-          @CloseModal="showDeletePresetModal = false"
-        />
-      </UModal>
+      <div v-if="showSaveModal">
+        <UModal
+          v-model="showSaveModal"
+          :ui="{
+            rounded: 'rounded-2xl',
+            background: 'dark:bg-neutral-800',
+            overlay: { background: 'bg-black/50 dark:bg-black/80' },
+          }"
+        >
+          <PresetSaveModal
+            :currentPreset="currentPreset"
+            @save-preset="addPreset"
+            @update-preset="updatePreset"
+            @close-modal="showSaveModal = false"
+          />
+        </UModal>
+      </div>
+      <div v-if="isShowModal">
+        <UModal
+          prevent-close
+          v-model="isShowModal"
+          :ui="{
+            rounded: 'rounded-2xl',
+            base: 'sm:!max-w-[650px]',
+            background: 'dark:bg-neutral-800',
+            overlay: { background: 'bg-black/50 dark:bg-black/80' },
+          }"
+        >
+          <ModelSetModal @CloseModal="closeModal" :models="props.models" />
+        </UModal>
+      </div>
+      <div v-if="showDeletePresetModal">
+        <UModal
+          v-model="showDeletePresetModal"
+          :ui="{
+            rounded: 'rounded-2xl',
+            background: 'dark:bg-neutral-800',
+            overlay: { background: 'bg-black/50 dark:bg-black/80' },
+          }"
+        >
+          <DeletePresetModal
+            :preset-name="currentPreset?.label"
+            @DeletePreset="deletePreset"
+            @CloseModal="showDeletePresetModal = false"
+          />
+        </UModal>
+      </div>
     </div>
   </div>
 </template>
@@ -234,9 +239,11 @@ function addPreset(name, desc, save_chat) {
 function updatePreset(name, desc, save_chat) {
   currentPreset.value.label = name;
   currentPreset.value.desc = desc;
-  currentPreset.value.system = props.context.system_prompt.content;
+  currentPreset.value.system = props.context.system_prompt;
   if (save_chat) {
-    currentPreset.value.messages = JSON.parse(JSON.stringify(props.context.messages));
+    currentPreset.value.messages = JSON.parse(
+      JSON.stringify(props.context.messages)
+    );
   }
   toast.add({
     title: "更新成功",

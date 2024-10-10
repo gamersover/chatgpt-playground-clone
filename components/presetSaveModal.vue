@@ -89,7 +89,7 @@
       >
       </UButton>
       <UButton
-        v-if="props.currentPreset"
+        v-if="currentPreset"
         :disabled="!isSaveEnable"
         label="更新"
         color="blue"
@@ -131,12 +131,12 @@ const description = computed(() => {
   }
 });
 
-function savePreset() {
+async function savePreset() {
   emits("closeModal");
   emits("savePreset", preset_name.value, preset_desc.value, save_chat.value);
 }
 
-function updatePreset() {
+async function updatePreset() {
   emits("closeModal");
   emits("updatePreset", preset_name.value, preset_desc.value, save_chat.value);
 }
