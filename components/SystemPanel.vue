@@ -14,7 +14,7 @@
         <div class="font-medium text-nowrap text-sm">{{ item.label }}</div>
         <div
           :class="{ 'text-gray-500': !open }"
-          class="flex-1 h-full max-w-full min-w-0 font-light text-ellipsis overflow-hidden"
+          class="flex-1 h-full max-w-full min-w-0 font-light text-ellipsis overflow-hidden leading-7"
           v-if="!open"
         >
           <span>{{ context.system_prompt }}</span>
