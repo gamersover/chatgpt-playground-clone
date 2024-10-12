@@ -65,7 +65,7 @@ function loadPreset(preset) {
   for (const context of chatContext.value) {
     context.system_prompt = preset.system;
     if (preset.messages) {
-      context.messages = preset.messages;
+      context.messages = JSON.parse(JSON.stringify(preset.messages));
     } else {
       context.messages = [];
     }
@@ -74,7 +74,7 @@ function loadPreset(preset) {
     title: "成功",
     description: "场景已加载",
     icon: "i-heroicons-check-circle-20-solid",
-    color: "green",
+    color: "blue",
   });
 }
 
@@ -87,7 +87,7 @@ function resetPreset() {
     title: "成功",
     description: "场景已重置",
     icon: "i-heroicons-check-circle-20-solid",
-    color: "green",
+    color: "blue",
   });
 }
 
@@ -165,8 +165,9 @@ async function submitChat(context) {
       for (const parsedLine of parsedLines) {
         if (submit.value.stop_generate) break;
         const { choices } = parsedLine;
-        const { delta } = choices[0];
+        if (!choices || !choices[0]) continue;
 
+        const { delta } = choices[0];
         if (!delta) continue;
 
         const { role, content } = delta;

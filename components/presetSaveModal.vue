@@ -108,7 +108,7 @@ const props = defineProps(["currentPreset"]);
 
 const preset_name = ref(props.currentPreset?.label || "");
 const preset_desc = ref(props.currentPreset?.desc || "");
-const save_chat = ref(false);
+const save_chat = ref(props.currentPreset?.with_messages || false);
 
 const isSaveEnable = computed(() => {
   return preset_name.value.length > 0;

@@ -208,7 +208,7 @@ function deletePreset() {
     title: "删除成功",
     description: "场景已删除",
     icon: "i-heroicons-check-circle-20-solid",
-    color: "green",
+    color: "blue",
   });
 }
 
@@ -224,6 +224,7 @@ function addPreset(name, desc, save_chat) {
     system: props.context.system_prompt,
   };
   if (save_chat) {
+    preset.with_messages = true;
     preset.messages = JSON.parse(JSON.stringify(props.context.messages));
   }
   presets.value.push(preset);
@@ -231,7 +232,7 @@ function addPreset(name, desc, save_chat) {
     title: "添加成功",
     description: "场景已添加",
     icon: "i-heroicons-check-circle-20-solid",
-    color: "green",
+    color: "blue",
   });
   currentPreset.value = preset;
 }
@@ -241,15 +242,20 @@ function updatePreset(name, desc, save_chat) {
   currentPreset.value.desc = desc;
   currentPreset.value.system = props.context.system_prompt;
   if (save_chat) {
+    currentPreset.value.with_messages = true;
     currentPreset.value.messages = JSON.parse(
       JSON.stringify(props.context.messages)
     );
+  }
+  else {
+    currentPreset.value.with_messages = false;
+    currentPreset.value.messages = []
   }
   toast.add({
     title: "更新成功",
     description: "场景已更新",
     icon: "i-heroicons-check-circle-20-solid",
-    color: "green",
+    color: "blue",
   });
 }
 
