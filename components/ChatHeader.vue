@@ -21,6 +21,7 @@
       <UButton
         variant="ghost"
         color="black"
+        square
         class="hover:bg-gray-200 hover:dark:bg-[#353740]"
         @click="$emit('clearMessages')"
       >
@@ -44,6 +45,7 @@
         <UButton
           variant="ghost"
           color="black"
+          square
           class="hover:bg-gray-200 hover:dark:bg-[#353740]"
           label="Settings"
         >
@@ -58,6 +60,7 @@
       <UButton
         variant="ghost"
         color="black"
+        square
         class="hover:bg-gray-200 hover:dark:bg-[#353740]"
         v-if="isCompared"
         @click="$emit('handleClose')"
