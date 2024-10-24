@@ -41,7 +41,7 @@
           <IconCompare />
         </template>
       </UButton>
-      <UPopover v-if="isCompared" :ui="{ background: 'dark:bg-neutral-800' }">
+      <UPopover :class="isCompared ? 'visable' : 'md:hidden'" :ui="{ background: 'dark:bg-neutral-800' }">
         <UButton
           variant="ghost"
           color="black"

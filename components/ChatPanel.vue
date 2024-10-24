@@ -38,7 +38,7 @@
       v-show="!isCompared"
     />
     <div
-      class="flex justify-center overflow-scroll min-w-[260px]"
+      class="justify-center overflow-scroll hidden md:flex min-w-[260px]"
       v-show="!isCompared"
     >
       <ConfigPanel :config="chatContext[0].config" />
