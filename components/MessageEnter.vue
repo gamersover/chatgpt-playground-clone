@@ -110,7 +110,11 @@ function buttonClickHandler() {
 defineShortcuts({
   meta_enter: {
     usingInput: true,
-    handler: buttonClickHandler,
+    handler: () => {
+      if (props.submit.isAvaiable || props.message.content) {
+        buttonClickHandler()
+      }
+    },
   },
 });
 </script>

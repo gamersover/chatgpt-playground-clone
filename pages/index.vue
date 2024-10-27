@@ -52,7 +52,7 @@ const submit = ref({
   is_submit: false,
   stop_generate: false,
   isAvaiable: computed(
-    () => models.value.length > 0 && chatContext.value.every(c => c.messages.length > 0)
+    () => models.value.length > 0 && chatContext.value.every(c => c.system_prompt.length > 0)
   ),
 });
 

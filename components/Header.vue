@@ -1,5 +1,5 @@
 <template>
-  <div class="w-screen h-16 flex justify-between items-center pl-4 pr-4">
+  <div class="w-full h-16 flex justify-between items-center pl-4 pr-4">
     <h1 class="font-medium text-2xl">Playground</h1>
     <div class="flex gap-2">
       <USelectMenu
