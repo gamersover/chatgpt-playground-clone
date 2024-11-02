@@ -29,6 +29,7 @@
           @change-role="changeRole"
           @add-message="addMessage"
           @submit-chat="submitChat"
+          @set-stop-generate="setStopGenerate"
         />
       </div>
     </div>
@@ -73,6 +74,12 @@ function handleCompareClosed(context) {
 
 function clearMessages(context) {
   context.messages.splice(0, context.messages.length);
+}
+
+function setStopGenerate() {
+  props.chatContext.forEach(element => {
+    element.stop_generate = true;
+  });
 }
 
 function addMessage(isRun = false) {

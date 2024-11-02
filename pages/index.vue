@@ -38,6 +38,7 @@ const chatContext = ref([
       frequency_penalty: 0,
       presence_penalty: 0,
     },
+    stop_generate: false,
   },
 ]);
 const isCompared = ref(false);
@@ -50,9 +51,12 @@ function toggleCompared() {
 
 const submit = ref({
   is_submit: false,
-  stop_generate: false,
   isAvaiable: computed(
-    () => models.value.length > 0 && chatContext.value.every(c => c.system_prompt.length > 0 || c.messages.length > 0)
+    () =>
+      models.value.length > 0 &&
+      chatContext.value.every(
+        (c) => c.system_prompt.length > 0 || c.messages.length > 0
+      )
   ),
 });
 
@@ -152,7 +156,7 @@ async function submitChat(context) {
     const decoder = new TextDecoder("utf-8");
     let nextRole = null;
     while (true) {
-      if (submit.value.stop_generate) break;
+      if (context.stop_generate) break;
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value, { stream: true });
@@ -163,7 +167,7 @@ async function submitChat(context) {
         .map((line) => JSON.parse(line));
 
       for (const parsedLine of parsedLines) {
-        if (submit.value.stop_generate) break;
+        if (context.stop_generate) break;
         const { choices } = parsedLine;
         if (!choices || !choices[0]) continue;
 
@@ -191,13 +195,11 @@ async function submitChat(context) {
     console.log(error);
   } finally {
     submit.value.is_submit = false;
-    submit.value.stop_generate = false;
+    context.stop_generate = false;
   }
 }
 
 async function submitAll() {
-  for (const context of chatContext.value) {
-    await submitChat(context);
-  }
+  Promise.allSettled(chatContext.value.map((context) => submitChat(context)));
 }
 </script>

@@ -91,7 +91,7 @@
 <script setup>
 const props = defineProps(["message", "submit"]);
 const textarea = ref(null);
-const emits = defineEmits(["changeRole", "addMessage", "submitChat"]);
+const emits = defineEmits(["changeRole", "addMessage", "submitChat", "setStopGenerate"]);
 
 const { metaSymbol } = useShortcuts();
 
@@ -101,7 +101,7 @@ onMounted(() => {
 
 function buttonClickHandler() {
   if (props.submit.is_submit) {
-    props.submit.stop_generate = true;
+    emits("setStopGenerate")
   } else {
     emits("submitChat");
   }
