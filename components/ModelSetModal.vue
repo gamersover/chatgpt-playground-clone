@@ -216,7 +216,8 @@ async function testModel() {
             })
         })
         const content = await rawResponse.json()
-        if (content.object === "error" || content.error) {
+
+        if (!rawResponse.ok || (content.object === "error" || content.error)) {
             toast.add({
                 description: content.message || content.error.message,
                 title: '失败',
