@@ -4,6 +4,15 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default defineNuxtConfig({
+  app: {
+    head: {
+      title: "LLM Playground",
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/icon.ico" },
+      ]
+    }
+  },
+
   devServer: {
     port: process.env.PORT ? parseInt(process.env.PORT) : 3000
   },
@@ -15,5 +24,7 @@ export default defineNuxtConfig({
       PORT: process.env.PORT
     }
   },
-  modules: ["@nuxt/ui"]
+
+  modules: ["@nuxt/ui"],
+  compatibilityDate: "2024-11-12"
 })
