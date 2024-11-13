@@ -9,7 +9,6 @@
       </p>
       <UTextarea
         autoresize
-        :ui="{ base: 'font-light' }"
         :rows="1"
         size="xl"
         :padded="false"
@@ -28,7 +27,7 @@
         :padded="false"
         color="black"
         variant="ghost"
-        class="text-transparent dark:group-hover:text-gray-400 group-hover:text-black"
+        class="text-transparent w-6 h-6 flex items-center justify-center dark:group-hover:text-gray-400 group-hover:text-black hover:bg-gray-200 hover:dark:bg-gray-600 rounded-md"
       >
         <IconDelete />
       </UButton>

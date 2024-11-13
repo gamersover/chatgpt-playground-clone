@@ -14,7 +14,6 @@
       :ui="{
         padding: { xl: 'px-1 py-0' },
         variant: { outline: 'ring-0 shadow-none focus:ring-0' },
-        base: 'font-light',
       }"
       :placeholder="
         message.role === 'user'

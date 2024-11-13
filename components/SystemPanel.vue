@@ -29,7 +29,6 @@
       <div class="px-4">
         <UTextarea
           autoresize
-          :ui="{ base: 'font-light' }"
           :padded="false"
           size="xl"
           placeholder="You are a helpful assistant..."
