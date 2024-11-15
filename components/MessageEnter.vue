@@ -39,7 +39,7 @@
           label="Add"
           color="gray"
           variant="ghost"
-          :disabled="!message.content"
+          :disabled="!message.content || submit.is_submit"
           @click="$emit('addMessage')"
         >
         </UButton>

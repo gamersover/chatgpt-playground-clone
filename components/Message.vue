@@ -9,8 +9,8 @@
       </p>
       <UTextarea
         autoresize
-        :rows="1"
         size="xl"
+        :rows="1"
         :padded="false"
         class="h-full w-full"
         variant="none"
