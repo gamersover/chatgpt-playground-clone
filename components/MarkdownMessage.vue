@@ -87,10 +87,11 @@
 import { marked } from "marked";
 import katex from "katex";
 import hljs from "highlight.js";
-import DOMPurify from 'isomorphic-dompurify';
+import DOMPurify from "isomorphic-dompurify";
 import "katex/dist/katex.min.css";
 import "highlight.js/styles/github.css";
 import "highlight.js/styles/github-dark.css";
+import { onMounted, onUnmounted } from "vue";
 
 marked.setOptions({
   highlight: function (code, lang) {
@@ -102,6 +103,30 @@ marked.setOptions({
 });
 
 const renderer = new marked.Renderer();
+
+const handleClick = (e) => {
+  const copyButton = e.target.closest("[data-copy-button]");
+  if (copyButton) {
+    const codeBlock = copyButton
+      .closest(".code-block-container")
+      .querySelector("code");
+    if (codeBlock) {
+      navigator.clipboard.writeText(codeBlock.textContent);
+      copyButton.textContent = "已复制!";
+      setTimeout(() => {
+        copyButton.textContent = "复制代码";
+      }, 2000);
+    }
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClick);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClick);
+});
 
 renderer.listitem = function ({ text }) {
   // 在列表项内容上应用marked解析，以支持嵌套的Markdown语法
@@ -139,14 +164,14 @@ renderer.text = function ({ text }) {
 };
 
 renderer.code = function ({ text: code, lang }) {
-  const language = lang || "plaintext"; // 如果没有指定语言，默认显示 plaintext
+  const language = lang || "plaintext";
   const highlighted = hljs.highlight(code, { language }).value;
 
   return `
-        <div class="border rounded-md border-gray-300 dark:border-neutral-800">
+        <div class="code-block-container border rounded-md border-gray-300 dark:border-neutral-800">
             <div class="flex rounded-t-md justify-between p-2 text-sm font-medium text-gray-500 bg-gray-100 dark:bg-neutral-900">
               <span class="font-medium">${language}</span>
-              <button onclick="copyToClipboard(this)">复制代码</button>
+              <button class="hover:text-gray-700 dark:hover:text-gray-300" data-copy-button>复制代码</button>
             </div>
             <pre class="!my-0 !p-0 !rounded-none"><code class="hljs ${language}">${highlighted}</code></pre>
         </div>
@@ -167,9 +192,9 @@ const renderedContent = computed(() => {
     const rawHtml = marked(props.message.content, { renderer });
     // 使用DOMPurify净化HTML
     return DOMPurify.sanitize(rawHtml, {
-      ADD_TAGS: ['math'], // 允许KaTeX使用的math标签
-      ADD_ATTR: ['display'], // 允许KaTeX使用的display属性
-      USE_PROFILES: { html: true, mathMl: true }
+      ADD_TAGS: ["math"], // 允许KaTeX使用的math标签
+      ADD_ATTR: ["display"], // 允许KaTeX使用的display属性
+      USE_PROFILES: { html: true, mathMl: true },
     });
   }
 });
