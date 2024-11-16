@@ -20,8 +20,34 @@
           <span>{{ context.system_prompt }}</span>
         </div>
         <div>
-          <IconTopArrow v-if="open" />
-          <IconRename v-else />
+          <UTooltip
+            v-if="open"
+            text="完成"
+            :ui="{ background: 'bg-black dark:bg-black', color: 'text-white' }"
+          >
+            <UButton
+              :padded="false"
+              color="black"
+              variant="ghost"
+              class="w-6 h-6 flex items-center justify-center hover:bg-gray-200 hover:dark:bg-[#353740] rounded-md"
+            >
+              <IconTopArrow />
+            </UButton>
+          </UTooltip>
+          <UTooltip
+            v-else
+            text="编辑"
+            :ui="{ background: 'bg-black dark:bg-black', color: 'text-white' }"
+          >
+            <UButton
+              :padded="false"
+              color="black"
+              variant="ghost"
+              class="w-6 h-6 flex items-center justify-center hover:bg-gray-200 hover:dark:bg-[#353740] rounded-md"
+            >
+              <IconEdit />
+            </UButton>
+          </UTooltip>
         </div>
       </div>
     </template>

@@ -1,0 +1,119 @@
+/* 在你的全局 CSS 文件中，例如 globals.css */
+.hljs {
+  @apply !bg-gray-100 !text-gray-800; /* 亮色模式的背景和文本颜色 */
+}
+
+.dark .hljs {
+  @apply !bg-black !text-gray-200; /* 暗色模式的背景和文本颜色 */
+}
+
+/* Light theme syntax highlighting */
+.hljs-keyword {
+  @apply !text-blue-700;
+}
+
+.hljs-built_in {
+  @apply !text-blue-700;
+}
+
+.hljs-type {
+  @apply !text-cyan-800;
+}
+
+.hljs-literal {
+  @apply !text-blue-700;
+}
+
+.hljs-number {
+  @apply !text-blue-600;
+}
+
+.hljs-regexp {
+  @apply !text-blue-500;
+}
+
+.hljs-string {
+  @apply !text-green-700;
+}
+
+.hljs-comment {
+  @apply !text-gray-500;
+}
+
+.hljs-doctag {
+  @apply !text-gray-500;
+}
+
+.hljs-meta {
+  @apply !text-yellow-700;
+}
+
+.hljs-tag {
+  @apply !text-blue-700;
+}
+
+.hljs-name {
+  @apply !text-blue-700;
+}
+
+.hljs-attr {
+  @apply !text-blue-500;
+}
+
+.hljs-attribute {
+  @apply !text-blue-500;
+}
+
+.hljs-function {
+  @apply !text-cyan-800;
+}
+
+.hljs-params {
+  @apply !text-gray-900;
+}
+
+.hljs-title {
+  @apply !text-cyan-800;
+}
+
+.hljs-section {
+  @apply !text-blue-500;
+}
+
+.hljs-selector-tag {
+  @apply !text-blue-700;
+}
+
+.hljs-selector-id {
+  @apply !text-blue-500;
+}
+
+.hljs-selector-class {
+  @apply !text-blue-500;
+}
+
+.hljs-selector-attr {
+  @apply !text-blue-500;
+}
+
+.hljs-selector-pseudo {
+  @apply !text-blue-500;
+}
+
+.hljs-addition {
+  @apply !text-green-700 !bg-green-50;
+}
+
+.hljs-deletion {
+  @apply !text-red-900 !bg-red-50;
+}
+
+/* Light mode */
+.hljs-subst {
+  @apply !text-gray-900;
+}
+
+/* Dark mode */
+.dark .hljs-subst {
+  @apply !text-gray-200;
+}

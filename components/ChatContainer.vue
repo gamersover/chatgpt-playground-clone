@@ -12,18 +12,19 @@
     ref="container"
   >
     <SystemPanel :context="context" />
-    <Message
+    <MarkdownMessage
       v-for="(message, index) of context.messages"
       @change-role="$emit('changeRole', message)"
       @remove-role="$emit('removeMessage', context, index)"
       :message="message"
       :key="message.id"
+      :isGenerating="index === context.messages.length - 1 && isGenerating"
     />
   </div>
 </template>
 
 <script setup>
-const props = defineProps(["context", "models", "isCompared"]);
+const props = defineProps(["context", "models", "isCompared", "isGenerating"]);
 const emits = defineEmits([
   "clearMessages",
   "handleCompareClicked",
@@ -41,7 +42,7 @@ async function autoExpand() {
       container.value.scrollHeight -
       container.value.scrollTop -
       container.value.clientHeight;
-    if (diff < 120) {
+    if (diff < 60) {
       container.value.scrollTop = container.value.scrollHeight;
     }
   }

@@ -19,6 +19,7 @@
             @handle-compare-closed="handleCompareClosed"
             @change-role="changeRole"
             @remove-message="removeMessage"
+            :isGenerating="submit.is_submit"
           />
         </div>
       </div>

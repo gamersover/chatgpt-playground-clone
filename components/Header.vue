@@ -45,7 +45,7 @@
       <UTooltip
         :ui="{
           base: 'px-1.5 py-1 h-full rounded-md',
-          background: 'bg-neutral-800 dark:bg-neutral-800',
+          background: 'bg-black',
         }"
       >
         <template #text>

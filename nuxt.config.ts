@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default defineNuxtConfig({
+  css: ['~/assets/css/main.css'],
+
   app: {
     head: {
       title: "LLM Playground",
@@ -26,5 +28,5 @@ export default defineNuxtConfig({
   },
 
   modules: ["@nuxt/ui"],
-  compatibilityDate: "2024-11-12"
+  compatibilityDate: "2024-11-16",
 })
