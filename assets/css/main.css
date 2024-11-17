@@ -1,10 +1,6 @@
 /* 在你的全局 CSS 文件中，例如 globals.css */
-.hljs {
-  @apply !bg-gray-100 !text-gray-800; /* 亮色模式的背景和文本颜色 */
-}
-
-.dark .hljs {
-  @apply !bg-black !text-gray-200; /* 暗色模式的背景和文本颜色 */
+.prose :where(pre):not(:where([class~=not-prose] *)) {
+  @apply bg-transparent m-0 p-0 overflow-x-auto flex flex-col justify-center;
 }
 
 /* Light theme syntax highlighting */
@@ -69,7 +65,7 @@
 }
 
 .hljs-params {
-  @apply !text-gray-900;
+  @apply !text-gray-900 dark:!text-gray-200;
 }
 
 .hljs-title {
