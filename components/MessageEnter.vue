@@ -1,5 +1,5 @@
 <template>
-  <div
+  <form
     class="mb-4 mx-4 p-4 flex flex-col min-h-[44px] max-h-[400px] w-full max-w-[800px] ring-1 ring-gray-300 transition-all hover:ring-2 hover:ring-blue-600 dark:hover:ring-blue-400 dark:ring-gray-500 rounded-md"
   >
     <UTextarea
@@ -84,7 +84,7 @@
         </UButton>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script setup>

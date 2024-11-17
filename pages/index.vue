@@ -164,7 +164,16 @@ async function submitChat(context) {
       const parsedLines = lines
         .map((line) => line.replace(/^data: /, "").trim()) // Remove the "data: " prefix
         .filter((line) => line !== "" && line !== "[DONE]") // Remove empty lines and "[DONE]"
-        .map((line) => JSON.parse(line));
+        .map((line) => {
+          try {
+            return JSON.parse(line);
+          } catch (error) {
+            console.error(`Error parsing line as JSON: ${error}`);
+            return null;
+          }
+        })
+        .filter((line) => line !== null);
+
 
       for (const parsedLine of parsedLines) {
         if (context.stop_generate) break;

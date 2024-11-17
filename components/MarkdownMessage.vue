@@ -38,11 +38,19 @@
         <div v-if="message.role === 'user'">
           {{ message.content }}
         </div>
-        <div
-          v-else
-          class="prose dark:prose-invert"
-          v-html="renderedContent"
-        ></div>
+        <div v-else class="prose dark:prose-invert">
+          <template v-for="(token, index) in tokens" :key="index">
+            <template v-if="token.type === 'code'">
+              <CodeBlock
+                :lang="token.lang"
+                :code="unsanitizeMd(token.text)"
+              ></CodeBlock>
+            </template>
+            <template v-else>
+              <div v-html="santizeMd(token.raw)"></div>
+            </template>
+          </template>
+        </div>
       </template>
       <div class="flex gap-2 items-center">
         <UTooltip
@@ -86,12 +94,9 @@
 <script setup>
 import { marked } from "marked";
 import katex from "katex";
-import hljs from "highlight.js";
 import DOMPurify from "isomorphic-dompurify";
 import "katex/dist/katex.min.css";
-import "highlight.js/styles/github.css";
-import "highlight.js/styles/github-dark.css";
-import { onMounted, onUnmounted } from "vue";
+import CodeBlock from "./CodeBlock.vue";
 
 marked.setOptions({
   highlight: function (code, lang) {
@@ -103,30 +108,6 @@ marked.setOptions({
 });
 
 const renderer = new marked.Renderer();
-
-const handleClick = (e) => {
-  const copyButton = e.target.closest("[data-copy-button]");
-  if (copyButton) {
-    const codeBlock = copyButton
-      .closest(".code-block-container")
-      .querySelector("code");
-    if (codeBlock) {
-      navigator.clipboard.writeText(codeBlock.textContent);
-      copyButton.textContent = "已复制!";
-      setTimeout(() => {
-        copyButton.textContent = "复制代码";
-      }, 2000);
-    }
-  }
-};
-
-onMounted(() => {
-  document.addEventListener("click", handleClick);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("click", handleClick);
-});
 
 renderer.listitem = function ({ text }) {
   // 在列表项内容上应用marked解析，以支持嵌套的Markdown语法
@@ -163,41 +144,41 @@ renderer.text = function ({ text }) {
   return text;
 };
 
-renderer.code = function ({ text: code, lang }) {
-  const language = lang || "plaintext";
-  const highlighted = hljs.highlight(code, { language }).value;
-
-  return `
-        <div class="code-block-container border rounded-md border-gray-300 dark:border-neutral-800">
-            <div class="flex rounded-t-md justify-between p-2 text-sm font-medium text-gray-500 bg-gray-100 dark:bg-neutral-900">
-              <span class="font-medium">${language}</span>
-              <button class="hover:text-gray-700 dark:hover:text-gray-300" data-copy-button>复制代码</button>
-            </div>
-            <pre class="!my-0 !p-0 !rounded-none"><code class="hljs ${language}">${highlighted}</code></pre>
-        </div>
-    `;
-};
-
 const props = defineProps(["message", "isGenerating"]);
 const textarea = ref(null);
 const textareaInput = ref(null);
 const emits = defineEmits(["changeRole", "removeRole"]);
+const tokens = ref([]);
 
 const editing = ref(false);
 
-const renderedContent = computed(() => {
-  if (props.message.role === "user") {
-    return props.message.content;
-  } else {
-    const rawHtml = marked(props.message.content, { renderer });
-    // 使用DOMPurify净化HTML
-    return DOMPurify.sanitize(rawHtml, {
-      ADD_TAGS: ["math"], // 允许KaTeX使用的math标签
-      ADD_ATTR: ["display"], // 允许KaTeX使用的display属性
-      USE_PROFILES: { html: true, mathMl: true },
-    });
+onMounted(() => {
+  if (props.message.role !== "user") {
+    tokens.value = marked.lexer(props.message.content);
   }
 });
+
+watch(
+  () => props.message.content,
+  () => {
+    if (props.message.role !== "user") {
+      tokens.value = marked.lexer(props.message.content);
+    }
+  }
+);
+
+const santizeMd = (content) => {
+  const parsed = marked.parse(content, { renderer });
+  return DOMPurify.sanitize(parsed, {
+    ADD_TAGS: ["math"], // 允许KaTeX使用的math标签
+    ADD_ATTR: ["display"], // 允许KaTeX使用的display属性
+    USE_PROFILES: { html: true, mathMl: true },
+  });
+};
+
+const unsanitizeMd = (md) => {
+  return md.replaceAll("&lt;", "<");
+};
 
 watch(
   () => editing.value,
@@ -210,59 +191,3 @@ watch(
   }
 );
 </script>
-
-<style>
-.prose {
-  width: 100%;
-}
-.prose h1 {
-  font-size: 2em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  font-weight: 600;
-}
-.prose h2 {
-  font-size: 1.5em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  font-weight: 600;
-}
-.prose h3 {
-  font-size: 1.25em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  font-weight: 600;
-}
-.prose p {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-.prose ul {
-  list-style-type: disc;
-  padding-left: 1.5em;
-  margin: 0.5em 0;
-}
-.prose ol {
-  list-style-type: decimal;
-  padding-left: 1.5em;
-  margin: 0.5em 0;
-}
-.prose blockquote {
-  border-left: 4px solid #e5e7eb;
-  padding-left: 1em;
-  margin: 0.5em 0;
-  color: #6b7280;
-}
-
-.copy-button {
-  background: none;
-  border: none;
-  color: #0366d6;
-  cursor: pointer;
-  font-size: 14px;
-}
-.copy-button:hover {
-  text-decoration: underline;
-}
-</style>
