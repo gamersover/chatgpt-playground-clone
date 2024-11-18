@@ -10,9 +10,11 @@
             @click="copyCode"
             class="hover:text-gray-700 dark:hover:text-gray-300 flex gap-1 items-center"><IconCopy v-if="!isCopied" /><IconDone size="14" v-else />复制代码</button>
         </div>
-        <code :class="lang" class="text-base flex py-4 px-4 bg-gray-100 dark:bg-neutral-900 text-gray-800 dark:text-gray-100">
-          <div v-html="highlightedCode"></div>
-        </code>
+        <div class="overflow-y-auto text-base flex py-4 px-4 bg-gray-100 dark:bg-neutral-900 text-gray-800 dark:text-gray-100">
+          <code :class="lang" class="flex">
+            <div v-html="highlightedCode"></div>
+          </code>
+        </div>
       </pre>
     </div>
   </div>

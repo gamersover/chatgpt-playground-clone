@@ -35,7 +35,7 @@
         </UTextarea>
       </template>
       <template v-else>
-        <div v-if="message.role === 'user'">
+        <div class="break-words" v-if="message.role === 'user'">
           {{ message.content }}
         </div>
         <div v-else class="prose dark:prose-invert">
@@ -47,7 +47,7 @@
               ></CodeBlock>
             </template>
             <template v-else>
-              <div v-html="santizeMd(token.raw)"></div>
+                <div v-raw-html="santizeMd(token.raw)"></div>
             </template>
           </template>
         </div>
@@ -97,6 +97,7 @@ import katex from "katex";
 import DOMPurify from "isomorphic-dompurify";
 import "katex/dist/katex.min.css";
 import CodeBlock from "./CodeBlock.vue";
+import vRawHtml from "./customDirective/v-raw-html";
 
 marked.setOptions({
   highlight: function (code, lang) {
