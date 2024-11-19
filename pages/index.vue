@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen dark:bg-[#202123] dark:text-gray-200">
+  <div class="flex flex-col h-[100vh] dark:bg-[#202123] dark:text-gray-200">
     <Header
       :models="models"
       :isCompared="isCompared"
@@ -173,7 +173,6 @@ async function submitChat(context) {
           }
         })
         .filter((line) => line !== null);
-
 
       for (const parsedLine of parsedLines) {
         if (context.stop_generate) break;

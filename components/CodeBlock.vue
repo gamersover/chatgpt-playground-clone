@@ -8,7 +8,7 @@
           <span class="font-medium">{{ lang }}</span>
           <button
             @click="copyCode"
-            class="hover:text-gray-700 dark:hover:text-gray-300 flex gap-1 items-center"><IconCopy v-if="!isCopied" /><IconDone size="14" v-else />复制代码</button>
+            class="hover:text-gray-700 dark:hover:text-gray-300 flex gap-1 items-center"><IconCopy v-if="!isCopied" /><IconDone size="14" v-else />{{ isCopied ? "已复制!" : "复制代码" }}</button>
         </div>
         <div class="overflow-y-auto text-base flex py-4 px-4 bg-gray-100 dark:bg-neutral-900 text-gray-800 dark:text-gray-100">
           <code :class="lang" class="flex">
@@ -36,10 +36,9 @@ const lang = computed(() => {
 
 const highlightedCode = computed(() => {
   const language = hljs.getLanguage(lang.value);
-  const code = hljs.highlightAuto(props.code, language?.aliases).value
+  const code = hljs.highlightAuto(props.code, language?.aliases).value;
   return DOMPurify.sanitize(code);
 });
-
 
 const copyCode = () => {
   navigator.clipboard.writeText(props.code);

@@ -6,7 +6,7 @@ This is a very simple playground clone. The tech stack is
 * [Tailwind CSS](https://tailwindcss.com/)
 * [Nuxtui](https://ui.nuxt.com/)
 
-![](asset/index.jpg)
+![](assets/index.jpg)
 
 ## Setup
 
@@ -49,5 +49,6 @@ pnpm run preview
 # TODO:
 * 数据改成indexDB存储
 * 另存为场景如果用户没有该名称，则将名称后面添加（copy）
-* 第一次如果聊天超过页面长度，无法自动滚动到底部
 * 模型添加后，跳转到模型，并focus，或者新添加的模型永远在前面
+* textarea 编辑时 滚动条乱跳  vueuse也有这个问题
+* markdown对于用户输入的html标签该怎么渲染

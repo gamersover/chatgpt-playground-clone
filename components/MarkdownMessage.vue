@@ -47,7 +47,7 @@
               ></CodeBlock>
             </template>
             <template v-else>
-                <div v-raw-html="santizeMd(token.raw)"></div>
+              <div v-html="santizeMd(token.raw)"></div>
             </template>
           </template>
         </div>
@@ -97,7 +97,6 @@ import katex from "katex";
 import DOMPurify from "isomorphic-dompurify";
 import "katex/dist/katex.min.css";
 import CodeBlock from "./CodeBlock.vue";
-import vRawHtml from "./customDirective/v-raw-html";
 
 marked.setOptions({
   highlight: function (code, lang) {
@@ -170,11 +169,12 @@ watch(
 
 const santizeMd = (content) => {
   const parsed = marked.parse(content, { renderer });
-  return DOMPurify.sanitize(parsed, {
+  const santized = DOMPurify.sanitize(parsed, {
     ADD_TAGS: ["math"], // 允许KaTeX使用的math标签
     ADD_ATTR: ["display"], // 允许KaTeX使用的display属性
     USE_PROFILES: { html: true, mathMl: true },
   });
+  return santized;
 };
 
 const unsanitizeMd = (md) => {
