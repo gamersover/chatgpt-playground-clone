@@ -35,7 +35,7 @@
         </UTextarea>
       </template>
       <template v-else>
-        <div class="break-words" v-if="message.role === 'user'">
+        <div class="break-words whitespace-pre-wrap" v-if="message.role === 'user'">
           {{ message.content }}
         </div>
         <div v-else class="prose dark:prose-invert">

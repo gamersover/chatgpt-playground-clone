@@ -7,15 +7,13 @@
     @handle-compare-clicked="$emit('handleCompareClicked')"
     @handle-close="$emit('handleCompareClosed', context)"
   />
-  <div class="flex-1 overflow-hidden">
-    <div class="h-full">
+  <div class="flex-1 overflow-hidden ">
       <div class="relative h-full">
         <div
           class="h-full w-full overflow-y-scroll scroll-smooth"
           ref="container"
-          @scroll="handleScroll"
         >
-          <div class="flex flex-col w-full gap-2 items-center my-2">
+          <div class="flex flex-col w-full gap-2 items-center my-2" ref="inner">
             <SystemPanel :context="context" />
             <MarkdownMessage
               v-for="(message, index) of context.messages"
@@ -28,8 +26,8 @@
               "
             />
             <UButton
-              v-if="visable"
-              class="absolute bg-clip-padding right-1/2 translate-x-1/2 z-10 bottom-5 rounded-full border border-gray-300 bg-white dark:bg-neutral-800 dark:border-gray-700"
+              v-if="visible"
+              class="absolute bg-clip-padding right-1/2 translate-x-1/2 z-10 bottom-5 rounded-full border border-gray-300 bg-white dark:bg-neutral-800 dark:border-gray-700 hover:bg-gray-100 hover:dark:bg-[#353740]"
               icon="i-heroicons-arrow-down"
               square
               color="gray"
@@ -39,14 +37,16 @@
             </UButton>
           </div>
         </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import throttle from "lodash/throttle";
+
 const container = ref(null);
-const visable = ref(false);
+const inner = ref(null)
+const visible = ref(false);
 
 const props = defineProps(["context", "models", "isCompared", "isGenerating"]);
 const emits = defineEmits([
@@ -64,20 +64,50 @@ async function autoExpand() {
       container.value.scrollTop -
       container.value.clientHeight;
     await nextTick();
-    if (diff < 20) {
+    if (diff < 5) {
       container.value.scrollTop = container.value.scrollHeight;
     }
   }
 }
 
-async function handleScroll() {
+const updateVisible = throttle(async () => {
   if (!container.value) return;
-  const diff =
-    container.value.scrollHeight -
-    container.value.scrollTop -
-    container.value.clientHeight;
-  visable.value = diff > 50;
-}
+  const scrollHeight = container.value.scrollHeight;
+  const clientHeight = container.value.clientHeight;
+  const scrollTop = container.value.scrollTop;
+
+  // 判断滚动条是否接近底部
+  await nextTick();
+  visible.value = scrollHeight - clientHeight - scrollTop > 40;
+}, 200);
+
+let resizeObserver;
+
+onMounted(() => {
+  if (container.value && inner.value) {
+    // 监听滚动事件
+    container.value.addEventListener("scroll", updateVisible);
+
+    // 使用 ResizeObserver 监听容器自身的尺寸变化
+    resizeObserver = new ResizeObserver(() => {
+      updateVisible();
+    });
+    resizeObserver.observe(inner.value, {
+      childList: true, // 监听子节点的添加或删除
+      subtree: true, // 监听后代节点的变化
+      characterData: true, // 监听文本内容的变化
+    });
+  }
+});
+
+onUnmounted(() => {
+  if (container.value) {
+    container.value.removeEventListener("scroll", updateVisible);
+  }
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+  }
+});
 
 async function scrollToBottom() {
   await nextTick();
