@@ -13,7 +13,7 @@
           class="h-full w-full overflow-y-scroll"
           ref="container"
         >
-          <div class="flex flex-col w-full gap-2 items-center my-2" ref="inner">
+          <div class="flex flex-col w-full gap-2 items-center my-2 px-4" ref="inner">
             <SystemPanel :context="context" />
             <MarkdownMessage
               v-for="(message, index) of context.messages"
