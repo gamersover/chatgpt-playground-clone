@@ -10,7 +10,7 @@
   <div class="flex-1 overflow-hidden ">
       <div class="relative h-full">
         <div
-          class="h-full w-full overflow-y-scroll scroll-smooth"
+          class="h-full w-full overflow-y-scroll"
           ref="container"
         >
           <div class="flex flex-col w-full gap-2 items-center my-2" ref="inner">
