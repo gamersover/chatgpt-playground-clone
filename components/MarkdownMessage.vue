@@ -22,7 +22,7 @@
           size="xl"
           :rows="1"
           :padded="false"
-          class="h-full w-full"
+          class="w-full"
           variant="none"
           v-model="message.content"
           :placeholder="
@@ -35,7 +35,10 @@
         </UTextarea>
       </template>
       <template v-else>
-        <div class="break-words whitespace-pre-wrap" v-if="message.role === 'user'">
+        <div
+          class="break-words whitespace-pre-wrap"
+          v-if="message.role === 'user'"
+        >
           {{ message.content }}
         </div>
         <div v-else class="prose dark:prose-invert">
@@ -180,6 +183,18 @@ const santizeMd = (content) => {
 const unsanitizeMd = (md) => {
   return md.replaceAll("&lt;", "<");
 };
+
+const adjustHeight = () => {
+  nextTick(() => {
+    if (!textareaInput.value.textarea) return;
+    const ta = textareaInput.value.textarea;
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+    ta.scrollTop = ta.scrollHeight;
+  });
+};
+
+watch(() => props.message.content, adjustHeight);
 
 watch(
   () => editing.value,

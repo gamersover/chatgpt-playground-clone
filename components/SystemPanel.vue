@@ -54,6 +54,7 @@
     <template #item>
       <div class="px-4">
         <UTextarea
+          ref="textareaInput"
           autoresize
           :padded="false"
           size="xl"
@@ -70,4 +71,17 @@
 
 <script setup>
 const props = defineProps(["context"]);
+const textareaInput = ref(null);
+
+const adjustHeight = () => {
+  nextTick(() => {
+    if (!textareaInput.value.textarea) return;
+    const ta = textareaInput.value.textarea;
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+    ta.scrollTop = ta.scrollHeight;
+  });
+};
+
+watch(() => props.context.system_prompt, adjustHeight);
 </script>
