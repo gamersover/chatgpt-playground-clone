@@ -73,15 +73,14 @@
 const props = defineProps(["context"]);
 const textareaInput = ref(null);
 
-const adjustHeight = () => {
-  nextTick(() => {
-    if (!textareaInput.value.textarea) return;
-    const ta = textareaInput.value.textarea;
-    ta.style.height = "auto";
-    ta.style.height = ta.scrollHeight + "px";
-    ta.scrollTop = ta.scrollHeight;
-  });
-};
+// const adjustHeight = () => {
+//   nextTick(() => {
+//     if (!textareaInput.value.textarea) return;
+//     const ta = textareaInput.value.textarea;
+//     ta.style.height = "auto";
+//     ta.style.height = ta.scrollHeight + "px";
+//   });
+// };
 
-watch(() => props.context.system_prompt, adjustHeight);
+// watch(() => props.context.system_prompt, adjustHeight);
 </script>

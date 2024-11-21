@@ -190,7 +190,6 @@ const adjustHeight = () => {
     const ta = textareaInput.value.textarea;
     ta.style.height = "auto";
     ta.style.height = ta.scrollHeight + "px";
-    ta.scrollTop = ta.scrollHeight;
   });
 };
 
