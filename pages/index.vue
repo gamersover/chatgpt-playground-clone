@@ -125,7 +125,6 @@ watch(
 
 async function submitChat(context) {
   try {
-    submit.value.is_submit = true;
     const response = await fetch("/api/openai", {
       method: "POST",
       headers: {
@@ -198,16 +197,17 @@ async function submitChat(context) {
         }
       }
     }
-    submit.value.is_submit = false;
   } catch (error) {
     console.log(error);
   } finally {
-    submit.value.is_submit = false;
     context.stop_generate = false;
   }
 }
 
 async function submitAll() {
-  Promise.allSettled(chatContext.value.map((context) => submitChat(context)));
+  // TODO: is_submit的状态应该是所有请求都完成后改变
+  submit.value.is_submit = true;
+  const res = await Promise.allSettled(chatContext.value.map((context) => submitChat(context)));
+  submit.value.is_submit = false;
 }
 </script>
