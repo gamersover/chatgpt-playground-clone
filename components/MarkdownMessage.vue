@@ -170,7 +170,16 @@ watch(
   }
 );
 
+function preprocessMarkdown(markdown) {
+  return markdown
+    // 将 \[...\] 替换为 $$...$$
+    .replace(/\\\[((?:.|\n)*?)\\\]/g, (_, math) => `$$${math}$$`)
+    // 将 \(...\) 替换为 $...$
+    .replace(/\\\(((?:.|\n)*?)\\\)/g, (_, math) => `$${math}$`);
+}
+
 const santizeMd = (content) => {
+  content = preprocessMarkdown(content);
   const parsed = marked.parse(content, { renderer });
   const santized = DOMPurify.sanitize(parsed, {
     ADD_TAGS: ["math"], // 允许KaTeX使用的math标签
@@ -186,7 +195,7 @@ const unsanitizeMd = (md) => {
 
 const adjustHeight = () => {
   nextTick(() => {
-    if (!textareaInput.value.textarea) return;
+    if (!textareaInput.value?.textarea) return;
     const ta = textareaInput.value.textarea;
     ta.style.height = "auto";
     ta.style.height = ta.scrollHeight + "px";
