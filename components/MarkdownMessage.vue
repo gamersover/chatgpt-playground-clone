@@ -12,7 +12,7 @@
       ref="textarea"
       @dblclick="isGenerating ? null : (editing = true)"
     >
-      <p class="font-medium text-sm">
+      <p class="font-medium">
         {{ message.role === "user" ? "User" : "Assistant" }}
       </p>
       <template v-if="editing">

@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   '@nuxt/ui':
-    specifier: ^2.15.2
+    specifier: ^2.19.2
     version: 2.19.2(vite@5.4.11)(vue@3.5.13)
   dotenv:
     specifier: ^16.4.5
@@ -20,23 +20,26 @@ dependencies:
   katex:
     specifier: ^0.16.11
     version: 0.16.11
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   marked:
-    specifier: ^15.0.0
-    version: 15.0.0
+    specifier: ^15.0.1
+    version: 15.0.1
   nuxt:
-    specifier: ^3.10.3
+    specifier: ^3.14.159
     version: 3.14.159(typescript@5.6.3)(vite@5.4.11)
   openai:
-    specifier: ^4.71.0
+    specifier: ^4.72.0
     version: 4.72.0
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
   vue:
-    specifier: ^3.4.21
+    specifier: ^3.5.13
     version: 3.5.13(typescript@5.6.3)
   vue-router:
-    specifier: ^4.3.0
+    specifier: ^4.4.5
     version: 4.4.5(vue@3.5.13)
 
 packages:
@@ -57,7 +60,7 @@ packages:
   /@antfu/install-pkg@0.4.1:
     resolution: {integrity: sha512-T7yB5QNG29afhWVkVq7XeIMBa5U/vs9mX69YqayXypPRmYzUmzwnYltplHmPtZ4HPCn+sQKeXW8I47wCbuBOjw==}
     dependencies:
-      package-manager-detector: 0.2.2
+      package-manager-detector: 0.2.4
       tinyexec: 0.3.1
     dev: false
 
@@ -1063,7 +1066,7 @@ packages:
       error-stack-parser-es: 0.1.5
       execa: 7.2.0
       fast-npm-meta: 0.2.2
-      flatted: 3.3.1
+      flatted: 3.3.2
       get-port-please: 3.1.2
       hookable: 5.5.3
       image-meta: 0.2.1
@@ -1189,7 +1192,7 @@ packages:
       mri: 1.2.0
       nanoid: 5.0.8
       ofetch: 1.4.1
-      package-manager-detector: 0.2.2
+      package-manager-detector: 0.2.4
       parse-git-config: 3.0.0
       pathe: 1.1.2
       rc9: 2.1.2
@@ -2864,8 +2867,8 @@ packages:
     hasBin: true
     dev: false
 
-  /cross-spawn@7.0.5:
-    resolution: {integrity: sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==}
+  /cross-spawn@7.0.6:
+    resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
     dependencies:
       path-key: 3.1.1
@@ -3375,7 +3378,7 @@ packages:
     resolution: {integrity: sha512-UduyVP7TLB5IcAQl+OzLyLcS/l32W/GLg+AhHJ+ow40FOk2U3SAllPwR44v4vmdFwIWqpdwxxpQbF1n5ta9seA==}
     engines: {node: ^14.18.0 || ^16.14.0 || >=18.0.0}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 4.3.1
       is-stream: 3.0.0
@@ -3390,7 +3393,7 @@ packages:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       get-stream: 8.0.1
       human-signals: 5.0.0
       is-stream: 3.0.0
@@ -3461,15 +3464,15 @@ packages:
       to-regex-range: 5.0.1
     dev: false
 
-  /flatted@3.3.1:
-    resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
+  /flatted@3.3.2:
+    resolution: {integrity: sha512-AiwGJM8YcNOaobumgtng+6NHuOqC3A7MixFeDafM3X9cIUM+xUXoS5Vfgf+OihAYe20fxqNM9yPBXJzRtZ/4eA==}
     dev: false
 
   /foreground-child@3.3.0:
     resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==}
     engines: {node: '>=14'}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       signal-exit: 4.1.0
     dev: false
 
@@ -4428,8 +4431,8 @@ packages:
       semver: 6.3.1
     dev: false
 
-  /marked@15.0.0:
-    resolution: {integrity: sha512-0mouKmBROJv/WSHJBPZZyYofUgawMChnD5je/g+aOBXsHDjb/IsnTQj7mnhQZu+qPJmRQ0ecX3mLGEUm3BgwYA==}
+  /marked@15.0.1:
+    resolution: {integrity: sha512-VnnE19XO2Vb2oZeH8quAepfrb6Aaz4OoY8yZQACfuy/5KVJ0GxYC0Qxzz/iuc+g5UF7H0HJ+QROfvH26XeBdDA==}
     engines: {node: '>= 18'}
     hasBin: true
     dev: false
@@ -5078,8 +5081,8 @@ packages:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
     dev: false
 
-  /package-manager-detector@0.2.2:
-    resolution: {integrity: sha512-VgXbyrSNsml4eHWIvxxG/nTL4wgybMTXCV2Un/+yEc3aDKKU6nQBZjbeP3Pl3qm9Qg92X/1ng4ffvCeD/zwHgg==}
+  /package-manager-detector@0.2.4:
+    resolution: {integrity: sha512-H/OUu9/zUfP89z1APcBf2X8Us0tt8dUK4lUmKqz12QNXif3DxAs1/YqjGtcutZi1zQqeNQRWr9C+EbQnnvSSFA==}
     dev: false
 
   /parse-git-config@3.0.0:
