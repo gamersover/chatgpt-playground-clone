@@ -1,6 +1,5 @@
 <template>
   <div
-    tabindex="1"
     :class="{
       'ring-2 ring-blue-600 dark:ring-blue-400': editing,
       'hover:ring-[0.5px] ring-gray-200 dark:hover:ring-gray-600': !editing,
@@ -10,7 +9,8 @@
     <div
       class="flex flex-col gap-2 w-full"
       ref="textarea"
-      @dblclick="isGenerating ? null : (editing = true)"
+      :tabindex="tindex"
+      @dblclick="handleDblClick"
     >
       <p class="font-medium">
         {{ message.role === "user" ? "User" : "Assistant" }}
@@ -30,7 +30,6 @@
               ? 'Enter user message...'
               : 'Enter assistant message...'
           "
-          @blur="editing = false"
         >
         </UTextarea>
       </template>
@@ -55,6 +54,17 @@
           </template>
         </div>
       </template>
+      <div v-show="message.tool_calls && message.tool_calls.length > 0">
+        <ToolCallPanel
+          v-for="tool_call of message.tool_calls"
+          :tool_call="tool_call"
+          :key="tool_call.id"
+          :isEditing="editing"
+          @submitToolCall="
+            (value) => $emit('submitToolCall', tool_call.id, value)
+          "
+        />
+      </div>
       <div class="flex gap-2 items-center">
         <UTooltip
           :text="editing ? '完成' : '编辑'"
@@ -147,10 +157,10 @@ renderer.text = function ({ text }) {
   return text;
 };
 
-const props = defineProps(["message", "isGenerating"]);
+const props = defineProps(["message", "isGenerating", "tindex"]);
 const textarea = ref(null);
 const textareaInput = ref(null);
-const emits = defineEmits(["changeRole", "removeRole"]);
+const emits = defineEmits(["changeRole", "removeRole", "submitToolCall"]);
 const tokens = ref([]);
 
 const editing = ref(false);
@@ -160,6 +170,16 @@ onMounted(() => {
     tokens.value = marked.lexer(props.message.content);
   }
 });
+
+const handleDblClick = () => {
+  editing.value = true;
+  nextTick(() => {
+    if (textareaInput.value) {
+      console.log(textareaInput.value);
+      textareaInput.value.textarea?.focus();
+    }
+  });
+};
 
 watch(
   () => props.message.content,
@@ -171,11 +191,13 @@ watch(
 );
 
 function preprocessMarkdown(markdown) {
-  return markdown
-    // 将 \[...\] 替换为 $$...$$
-    .replace(/\\\[((?:.|\n)*?)\\\]/g, (_, math) => `$$${math}$$`)
-    // 将 \(...\) 替换为 $...$
-    .replace(/\\\(((?:.|\n)*?)\\\)/g, (_, math) => `$${math}$`);
+  return (
+    markdown
+      // 将 \[...\] 替换为 $$...$$
+      .replace(/\\\[((?:.|\n)*?)\\\]/g, (_, math) => `$$${math}$$`)
+      // 将 \(...\) 替换为 $...$
+      .replace(/\\\(((?:.|\n)*?)\\\)/g, (_, math) => `$${math}$`)
+  );
 }
 
 const santizeMd = (content) => {
@@ -204,14 +226,19 @@ const adjustHeight = () => {
 
 watch(() => props.message.content, adjustHeight);
 
-watch(
-  () => editing.value,
-  (newVal) => {
-    if (newVal) {
-      nextTick(() => {
-        textareaInput.value.textarea?.focus();
-      });
-    }
+const handleClickOutside = (event) => {
+  if (textarea.value && !textarea.value.contains(event.target)) {
+    editing.value = false;
   }
-);
+};
+
+onMounted(() => {
+  // 监听整个文档的点击事件，用于检测点击外部
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  // 清除事件监听
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>

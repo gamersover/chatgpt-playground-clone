@@ -58,6 +58,7 @@ const emits = defineEmits(["submitChat", "toggleCompare"]);
 const message = ref({
   role: "user",
   content: null,
+  tool_calls: null,
   is_focus: true,
   id: uuidv4(),
 });

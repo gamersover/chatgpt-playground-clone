@@ -15,12 +15,13 @@
         >
           <div class="flex flex-col w-full gap-2 items-center my-2 px-4" ref="inner">
             <SystemPanel :context="context" />
-            <MarkdownMessage
+            <MessageContainer
               v-for="(message, index) of context.messages"
               @change-role="$emit('changeRole', message)"
               @remove-role="$emit('removeMessage', context, index)"
               :message="message"
               :key="message.id"
+              :tindex="index"
               :isGenerating="
                 index === context.messages.length - 1 && isGenerating
               "

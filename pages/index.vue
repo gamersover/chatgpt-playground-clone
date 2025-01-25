@@ -37,6 +37,7 @@ const chatContext = ref([
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
+      functions: [],
     },
     stop_generate: false,
   },
@@ -123,8 +124,41 @@ watch(
   { deep: true }
 );
 
+function convertMessagesWithToolCalls(messages) {
+  const new_messages = [];
+  for (const message of messages) {
+    if (message.tool_calls) {
+      const { role, content, tool_calls } = message;
+      const real_tool_calls = [];
+      const tool_inputs = [];
+      for (const tool_call of tool_calls) {
+        const { tool_input, ...real_tool_call } = tool_call;
+        real_tool_calls.push(real_tool_call);
+        tool_inputs.push({
+          role: "tool",
+          content: tool_input,
+          tool_call_id: tool_call.id,
+        });
+      }
+      new_messages.push({ role, content, tool_calls: real_tool_calls });
+      new_messages.push(...tool_inputs);
+    } else {
+      const { role, content, tool_calls } = message;
+      new_messages.push({
+        role,
+        content,
+        tool_calls,
+      });
+    }
+  }
+  return new_messages;
+}
+
 async function submitChat(context) {
   try {
+    console.log("输入", context.messages);
+    const converted_messages = convertMessagesWithToolCalls(context.messages);
+    console.log("转换后", converted_messages);
     const response = await fetch("/api/openai", {
       method: "POST",
       headers: {
@@ -140,12 +174,13 @@ async function submitChat(context) {
         top_p: context.config.top_p,
         frequency_penalty: context.config.frequency_penalty,
         presence_penalty: context.config.presence_penalty,
+        functions: context.config.functions.map(({ str }) => ({
+          type: "function",
+          function: JSON.parse(str),
+        })),
         messages: [
           { role: "system", content: context.system_prompt },
-          ...context.messages.map(({ role, content }) => ({
-            role: role,
-            content: content,
-          })),
+          ...converted_messages,
         ],
         stream: true,
       }),
@@ -181,13 +216,20 @@ async function submitChat(context) {
         const { delta } = choices[0];
         if (!delta) continue;
 
-        const { role, content } = delta;
+        const { role, content, tool_calls } = delta;
+
+        if (tool_calls) {
+          for (const tool_call of tool_calls) {
+            tool_call.tool_input = null;
+          }
+        }
 
         if (nextRole === null) {
           nextRole = role;
           context.messages.push({
             role: role,
             content: content || "",
+            tool_calls: tool_calls,
             is_focus: false,
             id: uuidv4(),
           });
@@ -197,6 +239,7 @@ async function submitChat(context) {
         }
       }
     }
+    console.log("输出", context.messages);
   } catch (error) {
     console.log(error);
   } finally {
@@ -207,7 +250,9 @@ async function submitChat(context) {
 async function submitAll() {
   // TODO: is_submit的状态应该是所有请求都完成后改变
   submit.value.is_submit = true;
-  const res = await Promise.allSettled(chatContext.value.map((context) => submitChat(context)));
+  const res = await Promise.allSettled(
+    chatContext.value.map((context) => submitChat(context))
+  );
   submit.value.is_submit = false;
 }
 </script>

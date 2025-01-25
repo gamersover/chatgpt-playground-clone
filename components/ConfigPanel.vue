@@ -1,5 +1,49 @@
 <template>
   <div class="flex flex-col p-4 w-64 gap-5 text-sm font-light h-full">
+    <div class="flex flex-col gap-3">
+      <div class="flex justify-between items-center">
+        <h1>Functions</h1>
+        <UButton
+          class="rounded-full p-2 bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors text-black dark:text-gray-200"
+          icon="i-heroicons-plus-small"
+          :padded="false"
+          label="add"
+          @click="AddFunction"
+        />
+      </div>
+      <div class="flex flex-col gap-2">
+        <div
+          class="flex flex-col"
+          v-for="(item, index) in config.functions"
+          :key="index"
+        >
+          <div class="flex justify-between group">
+            <div class="flex items-center gap-2">
+              <IconFunction />
+              <p>{{ item.name }}</p>
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100">
+              <UButton
+                class="w-4 h-4 flex items-center justify-center dark:group-hover:text-gray-400 group-hover:text-black hover:bg-gray-200 hover:dark:bg-[#353740] rounded-md"
+                icon="i-heroicons-pencil-square"
+                variant="ghost"
+                color="black"
+                :padded="false"
+                @click="editFunction(index)"
+              />
+              <UButton
+                class="w-4 h-4 flex items-center justify-center dark:group-hover:text-gray-400 group-hover:text-black hover:bg-gray-200 hover:dark:bg-[#353740] rounded-md"
+                icon="i-heroicons-trash"
+                variant="ghost"
+                color="black"
+                :padded="false"
+                @click="removeFunction(index)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="flex flex-col gap-3 group/item">
       <div class="flex justify-between">
         <p>Temperature</p>
@@ -169,11 +213,48 @@
       </URange>
     </div>
   </div>
+  <div v-if="showFunctionModal">
+    <UModal
+      v-model="showFunctionModal"
+      :ui="{
+        rounded: 'rounded-2xl',
+        background: 'dark:bg-neutral-800',
+        overlay: { background: 'bg-black/50 dark:bg-black/80' },
+      }"
+    >
+      <AddFunctionModal
+        :current-function="currentFunction"
+        @close-modal="showFunctionModal = false"
+        @save-function="saveFunction"
+      />
+    </UModal>
+  </div>
 </template>
 
 <script setup>
 const props = defineProps(["config"]);
 const stop_word = ref("");
+const showFunctionModal = ref(false);
+const currentFunction = ref(null);
+
+function AddFunction() {
+  currentFunction.value = null;
+  showFunctionModal.value = true;
+}
+
+function saveFunction(schema) {
+  const name = JSON.parse(schema).name;
+  props.config.functions.push({ name: name, str: schema });
+}
+
+function editFunction(index) {
+  currentFunction.value = props.config.functions[index].str;
+  showFunctionModal.value = true;
+}
+
+function removeFunction(index) {
+  props.config.functions.splice(index, 1);
+}
 
 function changeTemperature(e) {
   const v = parseFloat(e.target.value);

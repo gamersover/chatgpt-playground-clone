@@ -16,7 +16,6 @@
         }"
         placeholder="未选择预设场景"
         :options="presets"
-        by="id"
         option-attribute="label"
         v-model="currentPreset"
         @update:modelValue="changePreset"
