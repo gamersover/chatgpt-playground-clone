@@ -9,6 +9,7 @@
       :ui="{ background: 'bg-black dark:bg-black', color: 'text-white' }"
     >
       <UButton
+        @click="$emit('removeToolCall')"
         :padded="false"
         color="black"
         variant="ghost"
@@ -26,7 +27,7 @@
       <p>{{ tool_call.function.name }}({{ tool_call.function.arguments }})</p>
     </template>
     <div class="flex flex-col gap-2">
-      <p v-show="isEditing">函数返回结果：</p>
+      <p v-show="isEditing">返回结果：</p>
       <UInput
         v-model="tool_call.tool_input"
         :ui="{ icon: { trailing: { pointer: '' } } }"
@@ -55,4 +56,6 @@ interface Props {
 }
 
 defineProps<Props>();
+
+defineEmits(["removeToolCall"]);
 </script>

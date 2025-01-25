@@ -7,37 +7,40 @@
     @handle-compare-clicked="$emit('handleCompareClicked')"
     @handle-close="$emit('handleCompareClosed', context)"
   />
-  <div class="flex-1 overflow-hidden ">
-      <div class="relative h-full">
+  <div class="flex-1 overflow-hidden">
+    <div class="relative h-full">
+      <div class="h-full w-full overflow-y-scroll" ref="container">
         <div
-          class="h-full w-full overflow-y-scroll"
-          ref="container"
+          class="flex flex-col w-full gap-2 items-center my-2 px-4"
+          ref="inner"
         >
-          <div class="flex flex-col w-full gap-2 items-center my-2 px-4" ref="inner">
-            <SystemPanel :context="context" />
-            <MessageContainer
-              v-for="(message, index) of context.messages"
-              @change-role="$emit('changeRole', message)"
-              @remove-role="$emit('removeMessage', context, index)"
-              :message="message"
-              :key="message.id"
-              :tindex="index"
-              :isGenerating="
-                index === context.messages.length - 1 && isGenerating
-              "
-            />
-            <UButton
-              v-if="visible"
-              class="absolute bg-clip-padding right-1/2 translate-x-1/2 z-10 bottom-5 rounded-full border border-gray-300 bg-white dark:bg-neutral-800 dark:border-gray-700 hover:bg-gray-100 hover:dark:bg-[#353740]"
-              icon="i-heroicons-arrow-down"
-              square
-              color="gray"
-              variant="ghost"
-              @click="scrollToBottom"
-            >
-            </UButton>
-          </div>
+          <SystemPanel :context="context" />
+          <MessageContainer
+            v-for="(message, index) of context.messages"
+            @change-role="$emit('changeRole', message)"
+            @remove-role="$emit('removeMessage', context, index)"
+            @remove-tool-call="
+              (tool_call_id) => removeToolCall(index, tool_call_id)
+            "
+            :message="message"
+            :key="message.id"
+            :tindex="index"
+            :isGenerating="
+              index === context.messages.length - 1 && isGenerating
+            "
+          />
+          <UButton
+            v-if="visible"
+            class="absolute bg-clip-padding right-1/2 translate-x-1/2 z-10 bottom-5 rounded-full border border-gray-300 bg-white dark:bg-neutral-800 dark:border-gray-700 hover:bg-gray-100 hover:dark:bg-[#353740]"
+            icon="i-heroicons-arrow-down"
+            square
+            color="gray"
+            variant="ghost"
+            @click="scrollToBottom"
+          >
+          </UButton>
         </div>
+      </div>
     </div>
   </div>
 </template>
@@ -46,7 +49,7 @@
 import throttle from "lodash/throttle";
 
 const container = ref(null);
-const inner = ref(null)
+const inner = ref(null);
 const visible = ref(false);
 
 const props = defineProps(["context", "models", "isCompared", "isGenerating"]);
@@ -114,6 +117,12 @@ async function scrollToBottom() {
   await nextTick();
   container.value.scrollTop = container.value.scrollHeight;
 }
+
+const removeToolCall = (index, tool_call_id) => {
+  props.context.messages[index].tool_calls = props.context.messages[
+    index
+  ].tool_calls.filter((tool_call) => tool_call.id !== tool_call_id);
+};
 
 watch(
   () => props.context.messages,

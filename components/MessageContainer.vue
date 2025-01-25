@@ -60,9 +60,7 @@
           :tool_call="tool_call"
           :key="tool_call.id"
           :isEditing="editing"
-          @submitToolCall="
-            (value) => $emit('submitToolCall', tool_call.id, value)
-          "
+          @removeToolCall="$emit('removeToolCall', tool_call.id)"
         />
       </div>
       <div class="flex gap-2 items-center">
@@ -160,7 +158,7 @@ renderer.text = function ({ text }) {
 const props = defineProps(["message", "isGenerating", "tindex"]);
 const textarea = ref(null);
 const textareaInput = ref(null);
-const emits = defineEmits(["changeRole", "removeRole", "submitToolCall"]);
+const emits = defineEmits(["changeRole", "removeRole", "removeToolCall"]);
 const tokens = ref([]);
 
 const editing = ref(false);
