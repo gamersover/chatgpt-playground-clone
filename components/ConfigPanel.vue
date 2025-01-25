@@ -4,7 +4,7 @@
       <div class="flex justify-between items-center">
         <h1>Functions</h1>
         <UButton
-          class="rounded-full p-2 bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors text-black dark:text-gray-200"
+          class="rounded-full py-1 px-2 bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors text-black dark:text-gray-200"
           icon="i-heroicons-plus-small"
           :padded="false"
           label="add"

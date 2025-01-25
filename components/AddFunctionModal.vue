@@ -1,5 +1,5 @@
 <template>
-  <UCard>
+  <UCard :ui="{ rounded: 'rounded-2xl' }">
     <template #header>
       <h1 class="text-lg font-medium">添加函数</h1>
       <h2>模型将根据用户输入智能地决定是否调用函数。</h2>
