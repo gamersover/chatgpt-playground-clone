@@ -1,11 +1,8 @@
 <template>
-  <UCard class="w-[750px]">
+  <UCard>
     <template #header>
       <h1 class="text-lg font-medium">添加函数</h1>
-      <h2>
-        The model will intelligently decide to call functions based on input it
-        receives from the user.
-      </h2>
+      <h2>模型将根据用户输入智能地决定是否调用函数。</h2>
     </template>
 
     <div class="flex flex-col gap-3">
@@ -29,8 +26,18 @@
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton label="取消" @click="emits('closeModal')" />
-        <UButton label="保存" color="green" @click="saveFunction" />
+        <UButton
+          label="取消"
+          color="gray"
+          :ui="{
+            rounded: 'rounded-lg',
+            color: {
+              gray: { solid: 'dark:bg-gray-300/20 dark:hover:bg-zinc-500' },
+            },
+          }"
+          @click="emits('closeModal')"
+        />
+        <UButton label="保存" color="blue" @click="saveFunction" />
       </div>
     </template>
   </UCard>
@@ -100,7 +107,6 @@ const functionExamples = [
 
 const saveFunction = () => {
   emits("saveFunction", schema.value);
-  emits("closeModal");
 };
 </script>
 

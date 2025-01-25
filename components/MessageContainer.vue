@@ -175,7 +175,6 @@ const handleDblClick = () => {
   editing.value = true;
   nextTick(() => {
     if (textareaInput.value) {
-      console.log(textareaInput.value);
       textareaInput.value.textarea?.focus();
     }
   });

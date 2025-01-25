@@ -8,7 +8,7 @@
           icon="i-heroicons-plus-small"
           :padded="false"
           label="add"
-          @click="AddFunction"
+          @click="addFunction"
         />
       </div>
       <div class="flex flex-col gap-2">
@@ -224,7 +224,7 @@
     >
       <AddFunctionModal
         :current-function="currentFunction"
-        @close-modal="showFunctionModal = false"
+        @close-modal="closeModal"
         @save-function="saveFunction"
       />
     </UModal>
@@ -235,19 +235,45 @@
 const props = defineProps(["config"]);
 const stop_word = ref("");
 const showFunctionModal = ref(false);
+const currentEditFunctionIndex = ref(null);
 const currentFunction = ref(null);
 
-function AddFunction() {
+function closeModal() {
+  showFunctionModal.value = false;
+  currentEditFunctionIndex.value = null;
+  currentFunction.value = null;
+}
+
+function addFunction() {
+  currentEditFunctionIndex.value = null;
   currentFunction.value = null;
   showFunctionModal.value = true;
 }
 
 function saveFunction(schema) {
-  const name = JSON.parse(schema).name;
-  props.config.functions.push({ name: name, str: schema });
+  try {
+    const name = JSON.parse(schema).name;
+    if (currentEditFunctionIndex.value !== null) {
+      props.config.functions[currentEditFunctionIndex.value] = {
+        name: name,
+        str: schema,
+      };
+    } else {
+      props.config.functions.push({ name: name, str: schema });
+    }
+    closeModal();
+  } catch (e) {
+    useToast().add({
+      title: "错误",
+      description: "函数定义格式有误",
+      icon: "i-heroicons-x-circle-20-solid",
+      color: "red",
+    });
+  }
 }
 
 function editFunction(index) {
+  currentEditFunctionIndex.value = index;
   currentFunction.value = props.config.functions[index].str;
   showFunctionModal.value = true;
 }

@@ -156,9 +156,9 @@ function convertMessagesWithToolCalls(messages) {
 
 async function submitChat(context) {
   try {
-    console.log("输入", context.messages);
+    // console.log("输入", context.messages);
     const converted_messages = convertMessagesWithToolCalls(context.messages);
-    console.log("转换后", converted_messages);
+    // console.log("转换后", converted_messages);
     const response = await fetch("/api/openai", {
       method: "POST",
       headers: {
@@ -239,7 +239,7 @@ async function submitChat(context) {
         }
       }
     }
-    console.log("输出", context.messages);
+    // console.log("输出", context.messages);
   } catch (error) {
     console.log(error);
   } finally {
