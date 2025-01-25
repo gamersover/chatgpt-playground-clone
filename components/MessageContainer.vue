@@ -71,7 +71,7 @@
           :ui="{ background: 'bg-black dark:bg-black', color: 'text-white' }"
         >
           <UButton
-            @click="editing = !editing"
+            @click.stop="editing = !editing"
             :padded="false"
             color="black"
             :disabled="isGenerating"
