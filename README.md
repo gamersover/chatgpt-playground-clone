@@ -53,3 +53,4 @@ pnpm run preview
 * textarea 编辑时 滚动条乱跳  vueuse也有这个问题
 发现只要上方距离超不过有500px（好像不是按像素，是百分比），就不会有任何问题，感觉是高度计算bug
 * markdown对于用户输入的html标签该怎么渲染
+* preset保存config，tools

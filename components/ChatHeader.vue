@@ -32,8 +32,20 @@
       <UButton
         variant="ghost"
         color="black"
-        class="hover:bg-gray-200 hover:dark:bg-[#353740]"
+        class="hidden md:flex hover:bg-gray-200 hover:dark:bg-[#353740]"
         label="Compare"
+        v-if="!isCompared"
+        @click="$emit('handleCompareClicked')"
+      >
+        <template #trailing>
+          <IconCompare />
+        </template>
+      </UButton>
+      <UButton
+        variant="ghost"
+        color="black"
+        class="md:hidden hover:bg-gray-200 hover:dark:bg-[#353740]"
+        label=""
         v-if="!isCompared"
         @click="$emit('handleCompareClicked')"
       >

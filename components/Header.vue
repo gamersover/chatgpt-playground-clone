@@ -70,7 +70,7 @@
         </template>
         <UButton
           label="保存"
-          class="bg-gray-200/70 disabled:text-gray-500 disabled:bg-gray-200/40 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
+          class="hidden md:block bg-gray-200/70 disabled:text-gray-500 disabled:bg-gray-200/40 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
           @click="showSaveModal = true"
           color="gray"
           variant="ghost"
@@ -80,7 +80,7 @@
       </UTooltip>
       <UButton
         label="设置"
-        class="bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
+        class="hidden md:block bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors py-1 text-black dark:text-gray-200"
         @click="isShowModal = true"
       >
       </UButton>
@@ -89,6 +89,54 @@
         :ui="{ background: 'dark:bg-neutral-800' }"
       >
         <template #panel>
+          <div class="w-full">
+            <UButton
+              label="设置"
+              variant=""
+              class="md:hidden py-2 w-full rounded-none text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
+              @click="isShowModal = true"
+            ></UButton>
+          </div>
+          <UDivider :ui="{ border: { base: 'dark:border-gray-700' } }">
+          </UDivider>
+          <div class="w-full">
+            <UTooltip
+              :ui="{
+                base: 'px-1.5 py-1 h-full rounded-md',
+                background: 'bg-black',
+              }"
+            >
+              <template #text>
+                <div class="flex gap-3 items-center text-sm justify-between">
+                  <span class="text-white">保存场景</span>
+                  <div class="flex items-center gap-1">
+                    <UKbd
+                      :ui="{
+                        base: 'text-white dark:text-black',
+                        background: 'bg-neutral-600 dark:bg-gray-300',
+                      }"
+                      >{{ metaSymbol }}</UKbd
+                    >
+                    <UKbd
+                      :ui="{
+                        base: 'text-white dark:text-black',
+                        background: 'bg-neutral-600 dark:bg-gray-300',
+                      }"
+                      >S</UKbd
+                    >
+                  </div>
+                </div>
+              </template>
+              <UButton
+                label="保存场景"
+                class="md:hidden  py-2 w-full rounded-none text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
+                @click="showSaveModal = true"
+                variant=""
+                :disabled="isCompared"
+              >
+              </UButton>
+            </UTooltip>
+          </div>
           <div v-if="currentPreset" class="w-full">
             <UButton
               label="删除场景"
@@ -96,9 +144,9 @@
               @click="showDeletePresetModal = true"
               class="py-2 w-full rounded-none text-red-500 dark:text-red-500 text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
             ></UButton>
-            <UDivider :ui="{ border: { base: 'dark:border-gray-700' } }">
-            </UDivider>
           </div>
+          <UDivider :ui="{ border: { base: 'dark:border-gray-700' } }">
+          </UDivider>
           <div class="flex w-[190px] px-2 py-1 justify-between items-center">
             <div class="text-sm">主题</div>
             <ThemeSwitch />
@@ -245,10 +293,9 @@ function updatePreset(name, desc, save_chat) {
     currentPreset.value.messages = JSON.parse(
       JSON.stringify(props.context.messages)
     );
-  }
-  else {
+  } else {
     currentPreset.value.with_messages = false;
-    currentPreset.value.messages = []
+    currentPreset.value.messages = [];
   }
   toast.add({
     title: "更新成功",
