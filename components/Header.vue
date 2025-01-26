@@ -100,42 +100,14 @@
           <UDivider :ui="{ border: { base: 'dark:border-gray-700' } }">
           </UDivider>
           <div class="w-full">
-            <UTooltip
-              :ui="{
-                base: 'px-1.5 py-1 h-full rounded-md',
-                background: 'bg-black',
-              }"
+            <UButton
+              label="保存场景"
+              class="md:hidden py-2 w-full rounded-none text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
+              @click="showSaveModal = true"
+              variant=""
+              :disabled="isCompared"
             >
-              <template #text>
-                <div class="flex gap-3 items-center text-sm justify-between">
-                  <span class="text-white">保存场景</span>
-                  <div class="flex items-center gap-1">
-                    <UKbd
-                      :ui="{
-                        base: 'text-white dark:text-black',
-                        background: 'bg-neutral-600 dark:bg-gray-300',
-                      }"
-                      >{{ metaSymbol }}</UKbd
-                    >
-                    <UKbd
-                      :ui="{
-                        base: 'text-white dark:text-black',
-                        background: 'bg-neutral-600 dark:bg-gray-300',
-                      }"
-                      >S</UKbd
-                    >
-                  </div>
-                </div>
-              </template>
-              <UButton
-                label="保存场景"
-                class="md:hidden  py-2 w-full rounded-none text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
-                @click="showSaveModal = true"
-                variant=""
-                :disabled="isCompared"
-              >
-              </UButton>
-            </UTooltip>
+            </UButton>
           </div>
           <div v-if="currentPreset" class="w-full">
             <UButton
