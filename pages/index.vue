@@ -188,7 +188,14 @@ async function submitChat(context) {
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
-    let nextRole = null;
+
+    const message = {
+      role: null,
+      content: "",
+      tool_calls: [],
+      is_focus: false,
+      id: uuidv4(),
+    };
     while (true) {
       if (context.stop_generate) break;
       const { done, value } = await reader.read();
@@ -218,27 +225,38 @@ async function submitChat(context) {
 
         const { role, content, tool_calls } = delta;
 
+        if (message.role === null) {
+          message.role = role;
+        }
+        message.content += content || "";
+
         if (tool_calls) {
           for (const tool_call of tool_calls) {
-            tool_call.tool_input = null;
+            if (message.tool_calls.length <= tool_call.index) {
+              message.tool_calls.push({
+                id: tool_call.id,
+                type: "function",
+                function: {
+                  name: tool_call.name,
+                  arguments: tool_call.arguments || "",
+                },
+              });
+            }
+            if (tool_call.function.arguments) {
+              message.tool_calls[tool_call.index].function.arguments +=
+                tool_call.function.arguments;
+            }
           }
-        }
-
-        if (nextRole === null) {
-          nextRole = role;
-          context.messages.push({
-            role: role,
-            content: content || "",
-            tool_calls: tool_calls,
-            is_focus: false,
-            id: uuidv4(),
-          });
-        } else {
-          context.messages[context.messages.length - 1].content +=
-            content || "";
         }
       }
     }
+    if (message.tool_calls) {
+      for (const tool_call of message.tool_calls) {
+        tool_call.tool_input = null;
+      }
+    }
+
+    context.messages.push(message);
     // console.log("输出", context.messages);
   } catch (error) {
     console.log(error);
