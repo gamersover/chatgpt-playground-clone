@@ -136,6 +136,7 @@ function convertMessagesWithToolCalls(messages) {
         real_tool_calls.push(real_tool_call);
         tool_inputs.push({
           role: "tool",
+          name: real_tool_call.function.name,
           content: tool_input,
           tool_call_id: tool_call.id,
         });
@@ -237,12 +238,12 @@ async function submitChat(context) {
                 id: tool_call.id,
                 type: "function",
                 function: {
-                  name: tool_call.name,
-                  arguments: tool_call.arguments || "",
+                  name: tool_call.function.name,
+                  arguments: tool_call.function.arguments || "",
                 },
               });
             }
-            if (tool_call.function.arguments) {
+            else if (tool_call.function.arguments) {
               message.tool_calls[tool_call.index].function.arguments +=
                 tool_call.function.arguments;
             }
