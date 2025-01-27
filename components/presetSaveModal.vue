@@ -125,9 +125,9 @@ const title = computed(() => {
 const description = computed(() => {
   const suffix = save_chat.value ? "和对话历史" : "";
   if (props.currentPreset) {
-    return `更新预设场景, 包含系统提示${suffix}`;
+    return `更新预设场景, 包含系统提示，参数配置${suffix}`;
   } else {
-    return `保存当前的预设场景，包含系统提示${suffix}`;
+    return `保存当前的预设场景，包含系统提示，参数配置${suffix}`;
   }
 });
 

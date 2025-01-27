@@ -241,6 +241,7 @@ function addPreset(name, desc, save_chat) {
     label: name,
     desc: desc,
     system: props.context.system_prompt,
+    config: props.context.config,
   };
   if (save_chat) {
     preset.with_messages = true;
@@ -260,6 +261,7 @@ function updatePreset(name, desc, save_chat) {
   currentPreset.value.label = name;
   currentPreset.value.desc = desc;
   currentPreset.value.system = props.context.system_prompt;
+  currentPreset.value.config = props.context.config;
   if (save_chat) {
     currentPreset.value.with_messages = true;
     currentPreset.value.messages = JSON.parse(

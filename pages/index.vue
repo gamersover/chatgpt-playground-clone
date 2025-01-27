@@ -69,6 +69,7 @@ function setModelConfig(chat_index, model_index) {
 function loadPreset(preset) {
   for (const context of chatContext.value) {
     context.system_prompt = preset.system;
+    context.config = preset.config;
     if (preset.messages) {
       context.messages = JSON.parse(JSON.stringify(preset.messages));
     } else {
@@ -87,6 +88,16 @@ function resetPreset() {
   for (const context of chatContext.value) {
     context.system_prompt = "";
     context.messages = [];
+    context.config = {
+      model: null,
+      temperature: 1,
+      max_tokens: 256,
+      stop: [],
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+      functions: [],
+    };
   }
   toast.add({
     title: "成功",
