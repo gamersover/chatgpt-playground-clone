@@ -237,6 +237,7 @@ const stop_word = ref("");
 const showFunctionModal = ref(false);
 const currentEditFunctionIndex = ref(null);
 const currentFunction = ref(null);
+const toast = useToast();
 
 function closeModal() {
   showFunctionModal.value = false;
@@ -253,6 +254,17 @@ function addFunction() {
 function saveFunction(schema) {
   try {
     const name = JSON.parse(schema).name;
+
+    if (props.config.functions.some((f) => f.name === name)) {
+      toast.add({
+        title: "错误",
+        description: "函数名必须唯一",
+        icon: "i-heroicons-x-circle-20-solid",
+        color: "red",
+      });
+      return;
+    }
+
     if (currentEditFunctionIndex.value !== null) {
       props.config.functions[currentEditFunctionIndex.value] = {
         name: name,
@@ -263,7 +275,7 @@ function saveFunction(schema) {
     }
     closeModal();
   } catch (e) {
-    useToast().add({
+    toast.add({
       title: "错误",
       description: "函数定义格式有误",
       icon: "i-heroicons-x-circle-20-solid",
