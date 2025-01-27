@@ -16,12 +16,14 @@
           />
         </UDropdown>
       </div>
-      <UTextarea
-        :maxrows="25"
-        autoresize
-        :placeholder="JSON.stringify(functionExamples[1], null, 2)"
+      <CodeMirror
+        :placeholder="JSON.stringify(functionExamples[0], null, 2)"
+        minimal
         v-model="schema"
-      ></UTextarea>
+        :lang="lang"
+        :linter="linter"
+        class="ring-1 rounded-md ring-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition-all"
+      />
     </div>
 
     <template #footer>
@@ -44,10 +46,16 @@
 </template>
 
 <script lang="ts" setup>
+import CodeMirror from "vue-codemirror6";
+import { json, jsonParseLinter } from "@codemirror/lang-json";
+
 const emits = defineEmits(["closeModal", "saveFunction"]);
 const props = defineProps(["currentFunction"]);
 
 const schema = ref(props.currentFunction);
+
+const lang = json();
+const linter = jsonParseLinter();
 
 const items = [
   [
@@ -110,4 +118,8 @@ const saveFunction = () => {
 };
 </script>
 
-<style></style>
+<style>
+.cm-focused {
+  outline: none !important;
+}
+</style>
