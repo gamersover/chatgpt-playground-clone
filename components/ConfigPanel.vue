@@ -217,6 +217,7 @@
     <UModal
       v-model="showFunctionModal"
       :ui="{
+        width: 'sm:max-w-full !w-[750px]',
         rounded: 'rounded-2xl',
         background: 'dark:bg-neutral-800',
         overlay: { background: 'bg-black/50 dark:bg-black/80' },

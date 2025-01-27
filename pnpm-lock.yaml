@@ -8,6 +8,9 @@ dependencies:
   '@codemirror/lang-json':
     specifier: ^6.0.1
     version: 6.0.1
+  '@codemirror/theme-one-dark':
+    specifier: ^6.1.2
+    version: 6.1.2
   '@nuxt/ui':
     specifier: ^2.21.0
     version: 2.21.0(typescript@5.6.3)(vite@5.4.11)(vue@3.5.13)
@@ -454,6 +457,15 @@ packages:
     resolution: {integrity: sha512-3rA9lcwciEB47ZevqvD8qgbzhM9qMb8vCcQCNmDfVRPQG4JT9mSb0Jg8H7YjKGGQcFnLN323fj9jdnG59Kx6bg==}
     dependencies:
       '@marijn/find-cluster-break': 1.0.2
+    dev: false
+
+  /@codemirror/theme-one-dark@6.1.2:
+    resolution: {integrity: sha512-F+sH0X16j/qFLMAfbciKTxVOwkdAS336b7AXTKOZhy8BR3eH/RelsnLgLFINrpST63mmN2OuwUt0W2ndUgYwUA==}
+    dependencies:
+      '@codemirror/language': 6.10.8
+      '@codemirror/state': 6.5.1
+      '@codemirror/view': 6.36.2
+      '@lezer/highlight': 1.2.1
     dev: false
 
   /@codemirror/view@6.36.2:
