@@ -138,7 +138,7 @@ watch(
 function convertMessagesWithToolCalls(messages) {
   const new_messages = [];
   for (const message of messages) {
-    if (message.tool_calls) {
+    if (message.tool_calls && message.tool_calls.length > 0) {
       const { role, content, tool_calls } = message;
       const real_tool_calls = [];
       const tool_inputs = [];
@@ -159,7 +159,7 @@ function convertMessagesWithToolCalls(messages) {
       new_messages.push({
         role,
         content,
-        tool_calls,
+        tool_calls: tool_calls ?? null,
       });
     }
   }
@@ -168,9 +168,9 @@ function convertMessagesWithToolCalls(messages) {
 
 async function submitChat(context) {
   try {
-    // console.log("输入", context.messages);
+    console.log("输入", context.messages);
     const converted_messages = convertMessagesWithToolCalls(context.messages);
-    // console.log("转换后", converted_messages);
+    console.log("转换后", converted_messages);
     const response = await fetch("/api/openai", {
       method: "POST",
       headers: {
@@ -201,13 +201,7 @@ async function submitChat(context) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
 
-    const message = {
-      role: null,
-      content: "",
-      tool_calls: [],
-      is_focus: false,
-      id: uuidv4(),
-    };
+    let message_index = -1;
     while (true) {
       if (context.stop_generate) break;
       const { done, value } = await reader.read();
@@ -237,15 +231,25 @@ async function submitChat(context) {
 
         const { role, content, tool_calls } = delta;
 
-        if (message.role === null) {
-          message.role = role;
+        if (message_index === -1) {
+          context.messages.push({
+            role,
+            content: "",
+            tool_calls: [],
+            is_focus: false,
+            id: uuidv4(),
+          });
+          message_index = context.messages.length - 1;
         }
-        message.content += content || "";
+        context.messages[message_index].content += content || "";
 
         if (tool_calls) {
           for (const tool_call of tool_calls) {
-            if (message.tool_calls.length <= tool_call.index) {
-              message.tool_calls.push({
+            if (
+              context.messages[message_index].tool_calls.length <=
+              tool_call.index
+            ) {
+              context.messages[message_index].tool_calls.push({
                 id: tool_call.id,
                 type: "function",
                 function: {
@@ -253,23 +257,22 @@ async function submitChat(context) {
                   arguments: tool_call.function.arguments || "",
                 },
               });
-            }
-            else if (tool_call.function.arguments) {
-              message.tool_calls[tool_call.index].function.arguments +=
-                tool_call.function.arguments;
+            } else if (tool_call.function.arguments) {
+              context.messages[message_index].tool_calls[
+                tool_call.index
+              ].function.arguments += tool_call.function.arguments;
             }
           }
         }
       }
     }
-    if (message.tool_calls) {
-      for (const tool_call of message.tool_calls) {
+    if (context.messages[message_index].tool_calls) {
+      for (const tool_call of context.messages[message_index].tool_calls) {
         tool_call.tool_input = null;
       }
     }
 
-    context.messages.push(message);
-    // console.log("输出", context.messages);
+    console.log("输出", context.messages);
   } catch (error) {
     console.log(error);
   } finally {
