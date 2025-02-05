@@ -5,10 +5,10 @@
       'hover:ring-[0.5px] ring-gray-200 dark:hover:ring-gray-600': !editing,
     }"
     class="px-4 py-3 group flex flex-col w-full max-w-[800px] transition-all dark:hover:shadow-black hover:shadow-[0_1px_1px_rgba(0,0,0,.067),0_2px_5px_rgba(0,0,0,.067),0_3px_8px_rgba(0,0,0,.067)] dark:border-gray-500 rounded-md"
+    ref="textarea"
   >
     <div
       class="flex flex-col gap-2 w-full"
-      ref="textarea"
       :tabindex="tindex"
       @dblclick="handleDblClick"
     >
@@ -155,6 +155,36 @@ renderer.text = function ({ text }) {
   return text;
 };
 
+const thinkExtension = {
+  name: "think", // 自定义 token 名称
+  level: "block", // 作为块级解析（因为 <think> 通常是一个块级元素）
+  start(src) {
+    // 从源文本中找到 <think> 出现的位置
+    return src.indexOf("<think>");
+  },
+  tokenizer(src, tokens) {
+    // 使用正则匹配整个 <think> ... </think> 块
+    const rule = /^<think>\s*([\s\S]*?)\s*<\/think>/;
+    const match = rule.exec(src);
+    if (match) {
+      return {
+        type: "think", // token 类型名称
+        raw: match[0], // 完整匹配的原始文本
+        text: match[1], // 标签内部内容（可以包含换行）
+        tokens: this.lexer.blockTokens(match[1].trim()), // 递归解析内部内容（如果内部还包含 Markdown 语法）
+      };
+    }
+  },
+  renderer(token) {
+    // 在渲染阶段，将 token 渲染为自定义的 HTML
+    // 这里我们使用 <div class="think"> 包裹渲染后的内容
+    const content = token.text.replace(/\n/g, "<br>");
+    return `<details class="bg-gray-200 dark:bg-[#353740] p-2 rounded-md"><summary>思考（点击展开/收起）</summary>${content}</details>`;
+  },
+};
+
+marked.use({ extensions: [thinkExtension] });
+
 const props = defineProps(["message", "isGenerating", "tindex"]);
 const textarea = ref(null);
 const textareaInput = ref(null);
@@ -165,7 +195,7 @@ const editing = ref(false);
 
 onMounted(() => {
   if (props.message.role !== "user") {
-    tokens.value = marked.lexer(props.message.content);
+    tokens.value = marked.lexer(props.message.content, { gfm: true });
   }
 });
 
@@ -183,6 +213,7 @@ watch(
   () => {
     if (props.message.role !== "user") {
       tokens.value = marked.lexer(props.message.content);
+      console.log(tokens.value);
     }
   }
 );

@@ -155,11 +155,10 @@ function convertMessagesWithToolCalls(messages) {
       new_messages.push({ role, content, tool_calls: real_tool_calls });
       new_messages.push(...tool_inputs);
     } else {
-      const { role, content, tool_calls } = message;
+      const { role, content } = message;
       new_messages.push({
         role,
         content,
-        tool_calls: tool_calls ?? null,
       });
     }
   }
