@@ -42,6 +42,7 @@
         </div>
         <div v-else class="prose dark:prose-invert">
           <details
+            open
             v-if="message.reasoning_content && message.reasoning_content.length > 0"
             class="group bg-transparent rounded-lg"
           >
@@ -50,7 +51,7 @@
             >
               <span
                 class="font-normal text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-300"
-                >深度思考，持续10秒</span
+                >深度思考，持续{{ message.reasoning_seconds}}秒</span
               >
               <!-- 这里的 SVG 箭头会在 details 展开时旋转 -->
               <svg
@@ -214,12 +215,13 @@ const thinkExtension = {
     // 这里我们使用 <div class="think"> 包裹渲染后的内容
     const content = token.text.replace(/\n/g, "<br>");
     return `<details
-            class="group bg-transparent rounded-lg"
+              open
+              class="group bg-transparent rounded-lg"
             >
               <summary
                 class="flex items-center justify-between cursor-pointer font-semibold text-gray-800 dark:text-gray-100"
               >
-                <span class="font-normal text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-300">深度思考，持续10秒</span>
+                <span class="font-normal text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-300">深度思考</span>
                 <!-- 这里的 SVG 箭头会在 details 展开时旋转 -->
                 <svg
                   class="w-5 h-5 transition-transform duration-200 group-open:rotate-180"

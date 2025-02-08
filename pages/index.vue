@@ -201,6 +201,7 @@ async function submitChat(context) {
     const decoder = new TextDecoder("utf-8");
 
     let message_index = -1;
+    let start_time = null;
     while (true) {
       if (context.stop_generate) break;
       const { done, value } = await reader.read();
@@ -238,11 +239,20 @@ async function submitChat(context) {
             tool_calls: [],
             is_focus: false,
             id: uuidv4(),
+            reasoning_seconds: 0,
           });
+          start_time = Math.floor(Date.now() / 1000);
           message_index = context.messages.length - 1;
         }
         context.messages[message_index].content += content || "";
-        context.messages[message_index].reasoning_content += reasoning_content || "";
+        context.messages[message_index].reasoning_content +=
+          reasoning_content || "";
+        // 使用时间函数计算总共用了多少秒
+        if (reasoning_content && reasoning_content.length > 0) {
+          console.log(Math.floor(Date.now() / 1000), start_time);
+          context.messages[message_index].reasoning_seconds =
+            Math.floor(Date.now() / 1000) - start_time;
+        }
 
         if (tool_calls) {
           for (const tool_call of tool_calls) {
