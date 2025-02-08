@@ -228,12 +228,13 @@ async function submitChat(context) {
         const { delta } = choices[0];
         if (!delta) continue;
 
-        const { role, content, tool_calls } = delta;
+        const { role, content, tool_calls, reasoning_content } = delta;
 
         if (message_index === -1) {
           context.messages.push({
             role,
             content: "",
+            reasoning_content: "",
             tool_calls: [],
             is_focus: false,
             id: uuidv4(),
@@ -241,6 +242,7 @@ async function submitChat(context) {
           message_index = context.messages.length - 1;
         }
         context.messages[message_index].content += content || "";
+        context.messages[message_index].reasoning_content += reasoning_content || "";
 
         if (tool_calls) {
           for (const tool_call of tool_calls) {

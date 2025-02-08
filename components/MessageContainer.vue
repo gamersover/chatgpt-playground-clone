@@ -41,6 +41,40 @@
           {{ message.content }}
         </div>
         <div v-else class="prose dark:prose-invert">
+          <details
+            v-if="message.reasoning_content && message.reasoning_content.length > 0"
+            class="group bg-transparent rounded-lg"
+          >
+            <summary
+              class="flex items-center justify-between cursor-pointer font-semibold text-gray-800 dark:text-gray-100"
+            >
+              <span
+                class="font-normal text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-300"
+                >深度思考，持续10秒</span
+              >
+              <!-- 这里的 SVG 箭头会在 details 展开时旋转 -->
+              <svg
+                class="w-5 h-5 transition-transform duration-200 group-open:rotate-180"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </summary>
+            <div
+              class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 group-open:max-h-[500px] border-l-2 pl-4 border-neutral-800 dark:border-white"
+            >
+              <div class="text-gray-600 dark:text-gray-300">
+                {{ message.reasoning_content }}
+              </div>
+            </div>
+          </details>
           <template v-for="(token, index) in tokens" :key="index">
             <template v-if="token.type === 'code'">
               <CodeBlock
@@ -179,7 +213,36 @@ const thinkExtension = {
     // 在渲染阶段，将 token 渲染为自定义的 HTML
     // 这里我们使用 <div class="think"> 包裹渲染后的内容
     const content = token.text.replace(/\n/g, "<br>");
-    return `<details class="bg-gray-200 dark:bg-[#353740] p-2 rounded-md"><summary>思考（点击展开/收起）</summary>${content}</details>`;
+    return `<details
+            class="group bg-transparent rounded-lg"
+            >
+              <summary
+                class="flex items-center justify-between cursor-pointer font-semibold text-gray-800 dark:text-gray-100"
+              >
+                <span class="font-normal text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-300">深度思考，持续10秒</span>
+                <!-- 这里的 SVG 箭头会在 details 展开时旋转 -->
+                <svg
+                  class="w-5 h-5 transition-transform duration-200 group-open:rotate-180"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </summary>
+              <div
+                class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 group-open:max-h-[500px] border-l-2 pl-4 border-neutral-800 dark:border-white"
+              >
+                <div class="text-gray-600 dark:text-gray-300">
+                  ${content}
+                </div>
+              </div>
+            </details>`;
   },
 };
 
@@ -213,7 +276,6 @@ watch(
   () => {
     if (props.message.role !== "user") {
       tokens.value = marked.lexer(props.message.content);
-      console.log(tokens.value);
     }
   }
 );
