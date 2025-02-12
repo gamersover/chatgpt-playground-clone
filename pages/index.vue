@@ -167,9 +167,9 @@ function convertMessagesWithToolCalls(messages) {
 
 async function submitChat(context) {
   try {
-    console.log("输入", context.messages);
+    // console.log("输入", context.messages);
     const converted_messages = convertMessagesWithToolCalls(context.messages);
-    console.log("转换后", converted_messages);
+    // console.log("转换后", converted_messages);
     const response = await fetch("/api/openai", {
       method: "POST",
       headers: {
@@ -249,7 +249,6 @@ async function submitChat(context) {
           reasoning_content || "";
         // 使用时间函数计算总共用了多少秒
         if (reasoning_content && reasoning_content.length > 0) {
-          console.log(Math.floor(Date.now() / 1000), start_time);
           context.messages[message_index].reasoning_seconds =
             Math.floor(Date.now() / 1000) - start_time;
         }
@@ -283,7 +282,7 @@ async function submitChat(context) {
       }
     }
 
-    console.log("输出", context.messages);
+    // console.log("输出", context.messages);
   } catch (error) {
     console.log(error);
   } finally {

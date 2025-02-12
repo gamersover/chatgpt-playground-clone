@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="tool_call.type == 'function'"
-    class="relative flex flex-col gap-2 rounded-md bg-gray-100 p-2"
+    class="relative flex flex-col gap-2 rounded-md bg-gray-100 dark:bg-neutral-800 p-2"
   >
     <UTooltip
       text="删除"
@@ -19,9 +19,8 @@
       </UButton>
     </UTooltip>
     <template v-if="isEditing">
-      函数名：<UInput v-model="tool_call.function.name"></UInput> 参数：<UInput
-        v-model="tool_call.function.arguments"
-      ></UInput>
+      函数名：<UInput color="blue" variant="outline" v-model="tool_call.function.name"></UInput>
+      参数：<UInput color="blue" variant="outline" v-model="tool_call.function.arguments"></UInput>
     </template>
     <template v-else>
       <p>{{ tool_call.function.name }}({{ tool_call.function.arguments }})</p>
@@ -29,6 +28,8 @@
     <div class="flex flex-col gap-2">
       <p v-show="isEditing">返回结果：</p>
       <UInput
+        color="blue"
+        variant="outline"
         v-model="tool_call.tool_input"
         :ui="{ icon: { trailing: { pointer: '' } } }"
       >
