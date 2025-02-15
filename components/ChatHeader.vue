@@ -92,6 +92,19 @@ const emits = defineEmits([
 ]);
 const selectedModel = ref(props.config.model);
 
+
+watch(
+  () => props.config.model,
+  (newModel) => {
+    if (newModel) {
+      selectedModel.value = newModel;
+    } else {
+      selectedModel.value = props.models[0]
+    }
+  }
+);
+
+
 function setModelConfig() {
   if (selectedModel.value) {
     props.config.model = selectedModel.value;

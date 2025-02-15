@@ -69,7 +69,7 @@
               </svg>
             </summary>
             <div
-              class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 group-open:max-h-[500px] border-l-2 pl-4 border-neutral-800 dark:border-white"
+              class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 group-open:max-h-full border-l-2 pl-4 border-neutral-800 dark:border-white"
             >
               <div class="text-gray-600 dark:text-gray-300">
                 {{ message.reasoning_content }}

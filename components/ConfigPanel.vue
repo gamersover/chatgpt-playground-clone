@@ -95,7 +95,7 @@
       <URange
         v-model="config.max_tokens"
         :min="1"
-        :max="4096"
+        :max="8192"
         :step="1"
         color="blue"
         size="sm"
@@ -315,8 +315,8 @@ function changeMaxTokens(e) {
   if (!isNaN(v)) {
     if (v < 0) {
       props.config.max_tokens = 0;
-    } else if (v > 4096) {
-      props.config.max_tokens = 4096;
+    } else if (v > 8192) {
+      props.config.max_tokens = 8192;
     } else {
       props.config.max_tokens = v;
     }

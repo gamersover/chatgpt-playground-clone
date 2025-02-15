@@ -66,7 +66,9 @@ function setModelConfig(chat_index, model_index) {
   context.config.model = models.value[model_index];
 }
 
-function loadPreset(preset) {
+function loadPreset(preset_id) {
+  const presets = JSON.parse(localStorage.getItem("presets"))
+  const preset = presets.find((p) => p.id === preset_id);
   for (const context of chatContext.value) {
     context.system_prompt = preset.system;
     context.config = preset.config;
@@ -244,11 +246,11 @@ async function submitChat(context) {
           start_time = Math.floor(Date.now() / 1000);
           message_index = context.messages.length - 1;
         }
-        context.messages[message_index].content += content || "";
-        context.messages[message_index].reasoning_content +=
-          reasoning_content || "";
-        // 使用时间函数计算总共用了多少秒
-        if (reasoning_content && reasoning_content.length > 0) {
+        if (content) {
+          context.messages[message_index].content += content;
+        }
+        if (reasoning_content) {
+          context.messages[message_index].reasoning_content += reasoning_content;
           context.messages[message_index].reasoning_seconds =
             Math.floor(Date.now() / 1000) - start_time;
         }

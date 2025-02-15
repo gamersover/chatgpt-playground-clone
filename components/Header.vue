@@ -207,10 +207,10 @@ watch(
   { deep: true }
 );
 
-function changePreset() {
+function changePreset(preset_id) {
   const result = confirm("更改场景后，会丢弃当前未保存的内容，确定继续吗？");
   if (result) {
-    emits("loadPreset", currentPreset.value);
+    emits("loadPreset", currentPreset.value.id);
     oldPreset.value = currentPreset.value;
   } else {
     currentPreset.value = oldPreset.value;
@@ -222,13 +222,14 @@ function deletePreset() {
   presets.value = presets.value.filter(
     (item) => item.id != currentPreset.value.id
   );
-  currentPreset.value = null;
+  localStorage.setItem("presets", JSON.stringify(presets.value));
   toast.add({
     title: "删除成功",
     description: "场景已删除",
     icon: "i-heroicons-check-circle-20-solid",
     color: "blue",
   });
+  clearPreset()
 }
 
 function closeModal() {
@@ -246,8 +247,10 @@ function addPreset(name, desc, save_chat) {
   if (save_chat) {
     preset.with_messages = true;
     preset.messages = JSON.parse(JSON.stringify(props.context.messages));
+    preset.config = JSON.parse(JSON.stringify(props.context.config));
   }
   presets.value.push(preset);
+  localStorage.setItem("presets", JSON.stringify(presets.value));
   toast.add({
     title: "添加成功",
     description: "场景已添加",
@@ -258,19 +261,31 @@ function addPreset(name, desc, save_chat) {
 }
 
 function updatePreset(name, desc, save_chat) {
-  currentPreset.value.label = name;
-  currentPreset.value.desc = desc;
-  currentPreset.value.system = props.context.system_prompt;
-  currentPreset.value.config = props.context.config;
-  if (save_chat) {
-    currentPreset.value.with_messages = true;
-    currentPreset.value.messages = JSON.parse(
-      JSON.stringify(props.context.messages)
+  const presets = JSON.parse(localStorage.getItem("presets"));
+  // 更新presets中id=currentPreset.value.id的数据
+  if (presets) {
+    const index = presets.findIndex(
+      (item) => item.id == currentPreset.value.id
     );
-  } else {
-    currentPreset.value.with_messages = false;
-    currentPreset.value.messages = [];
+    if (index !== -1) {
+      presets[index].label = name;
+      presets[index].desc = desc;
+      presets[index].system = props.context.system_prompt;
+      presets[index].config = props.context.config;
+      if (save_chat) {
+        presets[index].with_messages = true;
+        presets[index].messages = JSON.parse(
+          JSON.stringify(props.context.messages)
+        );
+      } else {
+        presets[index].with_messages = false;
+        presets[index].messages = [];
+      }
+    }
+    currentPreset.value = presets[index];
+    localStorage.setItem("presets", JSON.stringify(presets));
   }
+
   toast.add({
     title: "更新成功",
     description: "场景已更新",
@@ -296,13 +311,6 @@ onMounted(async () => {
   }
 });
 
-watch(
-  presets,
-  (newVal) => {
-    localStorage.setItem("presets", JSON.stringify(newVal));
-  },
-  { deep: true }
-);
 
 defineShortcuts({
   meta_s: {
