@@ -158,10 +158,10 @@ marked.setOptions({
 
 const renderer = new marked.Renderer();
 
-// renderer.listitem = function ({ text }) {
-//   // 在列表项内容上应用marked解析，以支持嵌套的Markdown语法
-//   return "<li>" + marked.parseInline(text) + "</li>";
-// };
+renderer.listitem = function ({ text }) {
+  // 在列表项内容上应用marked解析，以支持嵌套的Markdown语法
+  return "<li>" + marked.parse(text) + "</li>";
+};
 
 renderer.text = function ({ text }) {
   // 处理独立公式 ($$...$$)
@@ -280,7 +280,7 @@ watch(
   () => props.message.content,
   () => {
     if (props.message.role !== "user") {
-      tokens.value = marked.lexer(props.message.content);
+      tokens.value = marked.lexer(props.message.content, { gfm: true });
     }
   }
 );
