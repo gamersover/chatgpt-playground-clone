@@ -12,7 +12,7 @@
         </div>
         <div class="overflow-y-auto text-base flex py-4 px-4 bg-gray-100 dark:bg-neutral-900 text-gray-800 dark:text-gray-100">
           <code :class="lang" class="flex">
-            <div v-html="highlightedCode"></div>
+            <div class="text-wrap" v-html="highlightedCode"></div>
           </code>
         </div>
       </pre>

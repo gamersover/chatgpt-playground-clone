@@ -30,7 +30,6 @@
               ? 'Enter user message...'
               : 'Enter assistant message...'
           "
-          @keydown.tab="handleTab"
         >
         </UTextarea>
       </template>
@@ -242,17 +241,17 @@ const handleClickOutside = (event) => {
   }
 };
 
-const handleTab = (e) => {
-  if (e.key === "Tab") {
-    e.preventDefault();
-    const start = e.target.selectionStart;
-    const end = e.target.selectionEnd;
-    const value = e.target.value;
-    e.target.value =
-      value.substring(0, start) + "\t" + value.substring(end, value.length);
-    e.target.selectionStart = e.target.selectionEnd = start + 1;
-  }
-}
+// const handleTab = (e) => {
+//   if (e.key === "Tab") {
+//     e.preventDefault();
+//     const start = e.target.selectionStart;
+//     const end = e.target.selectionEnd;
+//     const value = e.target.value;
+//     e.target.value =
+//       value.substring(0, start) + "\t" + value.substring(end, value.length);
+//     e.target.selectionStart = e.target.selectionEnd = start + 1;
+//   }
+// }
 
 onMounted(() => {
   // 监听整个文档的点击事件，用于检测点击外部
