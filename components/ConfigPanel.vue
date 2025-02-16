@@ -254,25 +254,27 @@ function addFunction() {
 
 function saveFunction(schema) {
   try {
-    const name = JSON.parse(schema).name;
-
-    if (props.config.functions.some((f) => f.name === name)) {
-      toast.add({
-        title: "错误",
-        description: "函数名必须唯一",
-        icon: "i-heroicons-x-circle-20-solid",
-        color: "red",
-      });
-      return;
-    }
+    const func = JSON.parse(schema);
+    const name = func.name;
+    const func_schema = JSON.stringify(func, null, 2);
 
     if (currentEditFunctionIndex.value !== null) {
       props.config.functions[currentEditFunctionIndex.value] = {
         name: name,
-        str: schema,
+        str: func_schema,
       };
     } else {
-      props.config.functions.push({ name: name, str: schema });
+      if (props.config.functions.some((f) => f.name === name)) {
+        toast.add({
+          title: "错误",
+          description: "函数名必须唯一",
+          icon: "i-heroicons-x-circle-20-solid",
+          color: "red",
+        });
+        return;
+      } else {
+        props.config.functions.push({ name: name, str: func_schema });
+      }
     }
     closeModal();
   } catch (e) {

@@ -30,6 +30,7 @@
               ? 'Enter user message...'
               : 'Enter assistant message...'
           "
+          @keydown.tab="handleTab"
         >
         </UTextarea>
       </template>
@@ -43,7 +44,9 @@
         <div v-else class="prose dark:prose-invert">
           <details
             open
-            v-if="message.reasoning_content && message.reasoning_content.length > 0"
+            v-if="
+              message.reasoning_content && message.reasoning_content.length > 0
+            "
             class="group bg-transparent rounded-lg"
           >
             <summary
@@ -51,7 +54,7 @@
             >
               <span
                 class="font-normal text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-300"
-                >深度思考，持续{{ message.reasoning_seconds}}秒</span
+                >深度思考，持续{{ message.reasoning_seconds }}秒</span
               >
               <!-- 这里的 SVG 箭头会在 details 展开时旋转 -->
               <svg
@@ -155,10 +158,10 @@ marked.setOptions({
 
 const renderer = new marked.Renderer();
 
-renderer.listitem = function ({ text }) {
-  // 在列表项内容上应用marked解析，以支持嵌套的Markdown语法
-  return "<li>" + marked.parseInline(text) + "</li>";
-};
+// renderer.listitem = function ({ text }) {
+//   // 在列表项内容上应用marked解析，以支持嵌套的Markdown语法
+//   return "<li>" + marked.parseInline(text) + "</li>";
+// };
 
 renderer.text = function ({ text }) {
   // 处理独立公式 ($$...$$)
@@ -323,6 +326,18 @@ const handleClickOutside = (event) => {
     editing.value = false;
   }
 };
+
+const handleTab = (e) => {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const start = e.target.selectionStart;
+    const end = e.target.selectionEnd;
+    const value = e.target.value;
+    e.target.value =
+      value.substring(0, start) + "\t" + value.substring(end, value.length);
+    e.target.selectionStart = e.target.selectionEnd = start + 1;
+  }
+}
 
 onMounted(() => {
   // 监听整个文档的点击事件，用于检测点击外部

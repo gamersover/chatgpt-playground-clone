@@ -68,7 +68,7 @@ import { json, jsonParseLinter } from "@codemirror/lang-json";
 const emits = defineEmits(["closeModal", "saveFunction"]);
 const props = defineProps(["currentFunction"]);
 
-const schema = ref(props.currentFunction);
+const schema = ref(props.currentFunction || "");
 
 const lang = json();
 const linter = jsonParseLinter();

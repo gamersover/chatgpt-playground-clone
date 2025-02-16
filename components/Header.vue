@@ -92,19 +92,21 @@
           <div class="w-full">
             <UButton
               label="设置"
-              variant=""
+              variant="ghost"
+              color="white"
               class="md:hidden py-2 w-full rounded-none text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
               @click="isShowModal = true"
             ></UButton>
           </div>
-          <UDivider :ui="{ border: { base: 'dark:border-gray-700' } }">
+          <UDivider class="md:hidden" :ui="{ border: { base: 'dark:border-gray-700' } }">
           </UDivider>
           <div class="w-full">
             <UButton
               label="保存场景"
               class="md:hidden py-2 w-full rounded-none text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
               @click="showSaveModal = true"
-              variant=""
+              variant="ghost"
+              color="white"
               :disabled="isCompared"
             >
             </UButton>
@@ -117,7 +119,7 @@
               class="py-2 w-full rounded-none text-red-500 dark:text-red-500 text-sm hover:bg-gray-100 hover:text-black hover:dark:bg-gray-900/50 dark:hover:text-white"
             ></UButton>
           </div>
-          <UDivider :ui="{ border: { base: 'dark:border-gray-700' } }">
+          <UDivider class="md:hidden" :ui="{ border: { base: 'dark:border-gray-700' } }">
           </UDivider>
           <div class="flex w-[190px] px-2 py-1 justify-between items-center">
             <div class="text-sm">主题</div>

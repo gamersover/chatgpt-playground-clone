@@ -20,6 +20,7 @@
           ? 'Enter user message...'
           : 'Enter assistant message...'
       "
+      @keydown.tab="handleTab"
     >
     </UTextarea>
     <div class="flex justify-between items-center pt-4">
@@ -103,6 +104,18 @@ function buttonClickHandler() {
     emits("setStopGenerate")
   } else {
     emits("submitChat");
+  }
+}
+
+const handleTab = (e) => {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const start = e.target.selectionStart;
+    const end = e.target.selectionEnd;
+    const value = e.target.value;
+    e.target.value =
+      value.substring(0, start) + "\t" + value.substring(end, value.length);
+    e.target.selectionStart = e.target.selectionEnd = start + 1;
   }
 }
 
