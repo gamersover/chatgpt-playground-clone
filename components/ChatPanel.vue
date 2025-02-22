@@ -25,6 +25,7 @@
       </div>
       <div class="flex justify-center items-end h-auto">
         <MessageEnter
+          :validFunctions="validFunctions"
           :message="message"
           :submit="submit"
           @change-role="changeRole"
@@ -63,6 +64,31 @@ const message = ref({
   id: uuidv4(),
 });
 
+const validFunctions = computed(() => {
+  const functionMaps = props.chatContext.map((context) => {
+    const functionMap = {};
+    context.config.functions.forEach((func) => {
+      functionMap[func.name] = func; // 使用函数名作为键，函数对象作为值
+    });
+    return functionMap;
+  });
+
+  if (functionMaps.length === 0) {
+    return [];
+  }
+
+  // 获取所有 context 中函数名称的交集
+  const functionNames = Object.keys(functionMaps[0]);
+  const commonNames = functionNames.filter((name) =>
+    functionMaps.every((functionMap) => functionMap.hasOwnProperty(name))
+  );
+
+  // 收集交集函数的完整对象
+  const intersection = commonNames.map((name) => functionMaps[0][name]);
+
+  return intersection;
+});
+
 function handleCompareClicked() {
   emits("toggleCompare");
   const newContext = JSON.parse(JSON.stringify(props.chatContext[0]));
@@ -79,13 +105,16 @@ function clearMessages(context) {
 }
 
 function setStopGenerate() {
-  props.chatContext.forEach(element => {
+  props.chatContext.forEach((element) => {
     element.stop_generate = true;
   });
 }
 
 function addMessage(isRun = false) {
-  if (message.value.content) {
+  if (
+    message.value.content ||
+    (message.value.tool_calls && message.value.tool_calls.length > 0)
+  ) {
     for (const context of props.chatContext) {
       context.messages.push({ ...message.value });
     }

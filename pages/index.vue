@@ -205,7 +205,10 @@ async function submitChat(context) {
     let message_index = -1;
     let start_time = null;
     while (true) {
-      if (context.stop_generate) break;
+      if (context.stop_generate) {
+        reader.cancel();
+        break;
+      };
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value, { stream: true });
@@ -224,7 +227,10 @@ async function submitChat(context) {
         .filter((line) => line !== null);
 
       for (const parsedLine of parsedLines) {
-        if (context.stop_generate) break;
+        if (context.stop_generate) {
+          reader.cancel();
+          break;
+        };
         const { choices } = parsedLine;
         if (!choices || !choices[0]) continue;
 

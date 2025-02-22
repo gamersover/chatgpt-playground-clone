@@ -12,9 +12,23 @@
       :tabindex="tindex"
       @dblclick="handleDblClick"
     >
-      <p class="font-medium">
-        {{ message.role === "user" ? "User" : "Assistant" }}
-      </p>
+      <div class="flex justify-between w-full">
+        <p class="font-medium">
+          {{ message.role === "user" ? "User" : "Assistant" }}
+        </p>
+        <UTooltip
+          v-if="message.role === 'assistant' && functions.length > 0"
+          text="添加函数"
+          :ui="{
+            base: 'px-1.5 py-1 h-full rounded-md text-white',
+            background: 'bg-black',
+          }"
+        >
+          <UButton color="gray" variant="ghost" @click="addFunction">
+            <IconFunction :size="20" />
+          </UButton>
+        </UTooltip>
+      </div>
       <template v-if="editing">
         <UTextarea
           ref="textareaInput"
@@ -81,7 +95,7 @@
           <MarkdownTokenRenderer :tokens="tokens" />
         </div>
       </template>
-      <div v-show="message.tool_calls && message.tool_calls.length > 0">
+      <div class="flex flex-col gap-2" v-show="message.tool_calls && message.tool_calls.length > 0">
         <ToolCallPanel
           v-for="tool_call of message.tool_calls"
           :tool_call="tool_call"
@@ -131,6 +145,7 @@
 
 <script setup>
 import { marked } from "marked";
+import { v4 as uuidv4 } from "uuid";
 
 const thinkExtension = {
   name: "think", // 自定义 token 名称
@@ -192,7 +207,7 @@ const thinkExtension = {
 
 marked.use({ extensions: [thinkExtension] });
 
-const props = defineProps(["message", "isGenerating", "tindex"]);
+const props = defineProps(["message", "functions", "isGenerating", "tindex"]);
 const textarea = ref(null);
 const textareaInput = ref(null);
 const emits = defineEmits(["changeRole", "removeRole", "removeToolCall"]);
@@ -214,6 +229,24 @@ const handleDblClick = () => {
     }
   });
 };
+
+const addFunction = () => {
+  if (props.message.role === "assistant") {
+    if (!props.message.tool_calls) {
+      props.message.tool_calls = [];
+    }
+    props.message.tool_calls.push({
+      id: uuidv4(),
+      type: "function",
+      function: {
+        name: "",
+        arguments: "",
+      },
+      tool_input: "",
+    });
+    editing.value = true;
+  }
+}
 
 watch(
   () => props.message.content,

@@ -23,6 +23,7 @@
               (tool_call_id) => removeToolCall(index, tool_call_id)
             "
             :message="message"
+            :functions="context.config.functions"
             :key="message.id"
             :tindex="index"
             :isGenerating="

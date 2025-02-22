@@ -19,7 +19,7 @@
         >
           <div class="flex justify-between group">
             <div class="flex items-center gap-2">
-              <IconFunction />
+              <IconFunction size="18" />
               <p>{{ item.name }}</p>
             </div>
             <div class="flex gap-2 opacity-0 group-hover:opacity-100">

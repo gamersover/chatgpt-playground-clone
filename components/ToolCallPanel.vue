@@ -19,8 +19,16 @@
       </UButton>
     </UTooltip>
     <template v-if="isEditing">
-      函数名：<UInput color="blue" variant="outline" v-model="tool_call.function.name"></UInput>
-      参数：<UInput color="blue" variant="outline" v-model="tool_call.function.arguments"></UInput>
+      函数名：<UInput
+        color="blue"
+        variant="outline"
+        v-model="tool_call.function.name"
+      ></UInput>
+      参数：<UInput
+        color="blue"
+        variant="outline"
+        v-model="tool_call.function.arguments"
+      ></UInput>
     </template>
     <template v-else>
       <p>{{ tool_call.function.name }}({{ tool_call.function.arguments }})</p>
@@ -56,7 +64,7 @@ interface Props {
   isEditing: boolean;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 defineEmits(["removeToolCall"]);
 </script>
