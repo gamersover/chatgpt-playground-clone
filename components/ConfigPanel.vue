@@ -102,8 +102,8 @@
       >
       </URange>
     </div>
-    <div class="flex flex-col gap-3">
-      <p>Stop</p>
+    <div class="flex flex-col">
+      <p class="mb-3">Stop</p>
       <div
         class="flex flex-wrap gap-1 text-sm h-auto min-h-10 w-full p-2 rounded-md ring-1 ring-gray-300 focus-within:ring-2 focus-within:!ring-blue-500 dark:focus-within:!ring-blue-400 dark:ring-gray-600 hover:ring-gray-400 dark:hover:ring-gray-500"
       >
@@ -124,6 +124,7 @@
         >
         </UInput>
       </div>
+      <div class="self-end">{{ config.stop.length }} / 4</div>
     </div>
     <div class="flex flex-col gap-3 group/item">
       <div class="flex justify-between">
@@ -330,6 +331,24 @@ function changeMaxTokens(e) {
 
 function addStopWord() {
   if (stop_word.value.length > 0) {
+    if (props.config.stop.length >= 4) {
+      toast.add({
+        title: "错误",
+        description: "停止词最多4个",
+        icon: "i-heroicons-x-circle-20-solid",
+        color: "red",
+      });
+      return;
+    }
+    if (props.config.stop.includes(stop_word.value)) {
+      toast.add({
+        title: "错误",
+        description: "停止词必须唯一",
+        icon: "i-heroicons-x-circle-20-solid",
+        color: "red",
+      });
+      return;
+    }
     props.config.stop.push(stop_word.value);
     stop_word.value = "";
   }
