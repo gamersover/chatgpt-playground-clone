@@ -42,6 +42,44 @@
           </UButton>
         </div>
       </div>
+      <div
+        v-if="context.last_metrics"
+        class="absolute bottom-2 right-1/2 translate-x-1/2 px-2 py-1 flex gap-3 rounded-lg dark:bg-neutral-800"
+      >
+        <UTooltip
+          text="延迟"
+          :ui="{ background: 'bg-black dark:bg-black', color: 'text-white' }"
+        >
+          <div class="flex items-center gap-1">
+            <UIcon name="i-heroicons-clock" />
+            <div>
+              {{
+                context.last_metrics.latency > 1000
+                  ? `${context.last_metrics.latency / 1000} s`
+                  : `${context.last_metrics.latency} ms`
+              }}
+            </div>
+          </div>
+        </UTooltip>
+        <UTooltip
+          text="输入token数，由tiktoken计算，仅供参考"
+          :ui="{ background: 'bg-black dark:bg-black', color: 'text-white' }"
+        >
+          <div class="flex items-center gap-1">
+            <UIcon name="i-heroicons-arrow-up" />
+            <div>{{ context.last_metrics.input_tokens }} t</div>
+          </div>
+        </UTooltip>
+        <UTooltip
+          text="输出token数，由tiktoken计算，仅供参考"
+          :ui="{ background: 'bg-black dark:bg-black', color: 'text-white' }"
+        >
+          <div class="flex items-center gap-1">
+            <UIcon name="i-heroicons-arrow-down" />
+            <div>{{ context.last_metrics.output_tokens }} t</div>
+          </div>
+        </UTooltip>
+      </div>
     </div>
   </div>
 </template>

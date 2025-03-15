@@ -16,6 +16,7 @@
     "dotenv": "^16.4.5",
     "highlight.js": "^11.10.0",
     "isomorphic-dompurify": "^2.16.0",
+    "js-tiktoken": "^1.0.19",
     "katex": "^0.16.11",
     "lodash": "^4.17.21",
     "marked": "^15.0.1",

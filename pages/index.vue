@@ -22,6 +22,10 @@
 
 <script setup>
 import { v4 as uuidv4 } from "uuid";
+import { Tiktoken } from "js-tiktoken/lite";
+import o200k_base from "js-tiktoken/ranks/o200k_base";
+
+const encoder = new Tiktoken(o200k_base);
 
 const toast = useToast();
 
@@ -40,6 +44,7 @@ const chatContext = ref([
       functions: [],
     },
     stop_generate: false,
+    last_metrics: null,
   },
 ]);
 const isCompared = ref(false);
@@ -67,7 +72,7 @@ function setModelConfig(chat_index, model_index) {
 }
 
 function loadPreset(preset_id) {
-  const presets = JSON.parse(localStorage.getItem("presets"))
+  const presets = JSON.parse(localStorage.getItem("presets"));
   const preset = presets.find((p) => p.id === preset_id);
   for (const context of chatContext.value) {
     context.system_prompt = preset.system;
@@ -100,6 +105,8 @@ function resetPreset() {
       presence_penalty: 0,
       functions: [],
     };
+    context.stop_generate = false;
+    context.last_metrics = null;
   }
   toast.add({
     title: "成功",
@@ -167,7 +174,27 @@ function convertMessagesWithToolCalls(messages) {
   return new_messages;
 }
 
+function countTokens(text) {
+  const tokens = encoder.encode(text);
+  return tokens.length;
+}
+
+function countInputTokens(messages) {
+  let tokens = 0;
+  // exclude last assistant message using tiktoken
+  for (let i = 0; i < messages.length - 1; i++) {
+    tokens += countTokens(messages[i].content);
+  }
+  return tokens;
+}
+
+function countOutputTokens(messages) {
+  // count last assistant message
+  return countTokens(messages[messages.length - 1].content);
+}
+
 async function submitChat(context) {
+  context.last_metrics = null;
   try {
     // console.log("输入", context.messages);
     const converted_messages = convertMessagesWithToolCalls(context.messages);
@@ -204,11 +231,16 @@ async function submitChat(context) {
 
     let message_index = -1;
     let start_time = null;
+    let metrics = {
+      latency: 0,
+      input_tokens: 0,
+      output_tokens: 0,
+    };
     while (true) {
       if (context.stop_generate) {
         reader.cancel();
         break;
-      };
+      }
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value, { stream: true });
@@ -230,7 +262,7 @@ async function submitChat(context) {
         if (context.stop_generate) {
           reader.cancel();
           break;
-        };
+        }
         const { choices } = parsedLine;
         if (!choices || !choices[0]) continue;
 
@@ -249,16 +281,17 @@ async function submitChat(context) {
             id: uuidv4(),
             reasoning_seconds: 0,
           });
-          start_time = Math.floor(Date.now() / 1000);
+          start_time = Date.now();
           message_index = context.messages.length - 1;
         }
         if (content) {
           context.messages[message_index].content += content;
         }
         if (reasoning_content) {
-          context.messages[message_index].reasoning_content += reasoning_content;
+          context.messages[message_index].reasoning_content +=
+            reasoning_content;
           context.messages[message_index].reasoning_seconds =
-            Math.floor(Date.now() / 1000) - start_time;
+            Math.floor(Date.now() - start_time) / 1000;
         }
 
         if (tool_calls) {
@@ -289,7 +322,10 @@ async function submitChat(context) {
         tool_call.tool_input = null;
       }
     }
-
+    metrics.latency = Math.floor(Date.now()) - start_time;
+    metrics.input_tokens = countInputTokens(context.messages);
+    metrics.output_tokens = countOutputTokens(context.messages);
+    context.last_metrics = metrics;
     // console.log("输出", context.messages);
   } catch (error) {
     console.log(error);
