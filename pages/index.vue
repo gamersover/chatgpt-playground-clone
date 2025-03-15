@@ -179,9 +179,9 @@ function countTokens(text) {
   return tokens.length;
 }
 
-function countInputTokens(messages) {
-  let tokens = 0;
+function countInputTokens(system_prompt, messages) {
   // exclude last assistant message using tiktoken
+  let tokens = countTokens(system_prompt);
   for (let i = 0; i < messages.length - 1; i++) {
     tokens += countTokens(messages[i].content);
   }
@@ -323,7 +323,10 @@ async function submitChat(context) {
       }
     }
     metrics.latency = Math.floor(Date.now()) - start_time;
-    metrics.input_tokens = countInputTokens(context.messages);
+    metrics.input_tokens = countInputTokens(
+      context.system_prompt,
+      context.messages
+    );
     metrics.output_tokens = countOutputTokens(context.messages);
     context.last_metrics = metrics;
     // console.log("输出", context.messages);

@@ -101,7 +101,10 @@ function handleCompareClosed(context) {
 }
 
 function clearMessages(context) {
-  context.messages.splice(0, context.messages.length);
+  context.system_prompt = "";
+  context.messages = [];
+  context.stop_generate = false;
+  context.last_metrics = null;
 }
 
 function setStopGenerate() {
