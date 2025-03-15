@@ -75,7 +75,7 @@
         >
         </UButton>
         <UButton
-          :label="submit.is_submit ? 'Cancel' : 'Run'"
+          :label="submit.is_submit ? 'Stop' : 'Run'"
           class="dark:text-gray-200 py-1 px-1.5"
           :color="submit.is_submit ? 'red' : 'blue'"
           :ui="{
@@ -92,29 +92,37 @@
           "
         >
           <template #trailing>
-            <div
-              class="flex items-center gap-1 px-1 bg-white/10 rounded-md backdrop-blur-md"
-            >
-              <UKbd
-                :ui="{
-                  base: 'text-none',
-                  size: { sm: 'min-w-0' },
-                  ring: 'ring-0',
-                  background: 'bg-transparent dark:bg-transparent',
-                  padding: 'px-0',
-                }"
-                >{{ metaSymbol }}</UKbd
+            <template v-if="submit.is_submit">
+              <UIcon
+                name="i-heroicons-arrow-path-20-solid"
+                class="animate-spin"
+              />
+            </template>
+            <template v-else>
+              <div
+                class="flex items-center gap-1 px-1 bg-white/10 rounded-md backdrop-blur-md"
               >
-              <UKbd
-                :ui="{
-                  base: 'text-none',
-                  ring: 'ring-0',
-                  background: 'bg-transparent dark:bg-transparent',
-                  padding: 'px-0',
-                }"
-                >Enter</UKbd
-              >
-            </div>
+                <UKbd
+                  :ui="{
+                    base: 'text-none',
+                    size: { sm: 'min-w-0' },
+                    ring: 'ring-0',
+                    background: 'bg-transparent dark:bg-transparent',
+                    padding: 'px-0',
+                  }"
+                  >{{ metaSymbol }}</UKbd
+                >
+                <UKbd
+                  :ui="{
+                    base: 'text-none',
+                    ring: 'ring-0',
+                    background: 'bg-transparent dark:bg-transparent',
+                    padding: 'px-0',
+                  }"
+                  >Enter</UKbd
+                >
+              </div>
+            </template>
           </template>
         </UButton>
       </div>
