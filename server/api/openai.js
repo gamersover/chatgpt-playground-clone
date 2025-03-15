@@ -34,7 +34,11 @@ export default defineEventHandler(async (event) => {
 
         if (body.stream) {
             for await (const chunk of completions) {
-                // console.log(JSON.stringify(chunk))
+                // 判断是否断开连接
+                if (event.node.req.socket.destroyed) {
+                    break
+                }
+                console.log(JSON.stringify(chunk))
                 event.node.res.write(JSON.stringify(chunk) + "\n");
             }
             event.node.res.end()
