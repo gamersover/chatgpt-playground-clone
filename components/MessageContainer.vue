@@ -222,6 +222,7 @@ onMounted(() => {
 });
 
 const handleDblClick = () => {
+  if (editing.value) return;
   editing.value = true;
   nextTick(() => {
     if (textareaInput.value) {

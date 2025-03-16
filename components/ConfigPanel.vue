@@ -7,7 +7,7 @@
           class="rounded-full py-1 px-2 bg-gray-200/70 hover:bg-gray-200/90 dark:bg-gray-300/20 dark:hover:bg-zinc-500 transition-colors text-black dark:text-gray-200"
           icon="i-heroicons-plus-small"
           :padded="false"
-          label="add"
+          label="Add"
           @click="addFunction"
         />
       </div>

@@ -35,6 +35,7 @@
         :placeholder="JSON.stringify(functionExamples[0], null, 2)"
         minimal
         wrap
+        :dark="is_dark"
         v-model="schema"
         :lang="lang"
         :linter="linter"
@@ -69,6 +70,24 @@ const emits = defineEmits(["closeModal", "saveFunction"]);
 const props = defineProps(["currentFunction"]);
 
 const schema = ref(props.currentFunction || "");
+const is_dark = ref(document.documentElement.classList.contains('dark'))
+
+let observer: MutationObserver
+
+onMounted(() => {
+  observer = new MutationObserver(() => {
+    is_dark.value = document.documentElement.classList.contains('dark')
+  })
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'] // 只监听 class 变化
+  })
+})
+
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect()
+})
 
 const lang = json();
 const linter = jsonParseLinter();
